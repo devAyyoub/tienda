@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <?php require './bd_productos.php'; ?>
+    <link href="./css/style.css" rel="stylesheet">
+    <?php require './bd/bd_productos.php' ?>
 </head>
 
 <body>
@@ -75,16 +76,28 @@
         }
 
         // $_FILES
+
         $nombre_imagen = $_FILES["imagen"]["name"];
         $tipo_imagen = $_FILES["imagen"]["type"];
         $tamano_imagen = $_FILES["imagen"]["size"];
         $ruta_temporal = $_FILES["imagen"]["tmp_name"];
-        echo $nombre_imagen . " " . $tipo_imagen . " " . $tamano_imagen . " " . $ruta_temporal;
-
-        $ruta_final = "img/" . $nombre_imagen;
-
-        move_uploaded_file($ruta_temporal, $ruta_final);
-
+       
+        if (strlen($nombre_imagen) > 1) {
+            if ($_FILES["imagen"]["error"] != 0) {
+                echo "Error al subir la imagen";
+            } else {
+                $permitidos = ["image/jpeg", "image/png", "image/gif"];
+                if (!in_array($_FILES["imagen"]["type"], $permitidos)) {
+                    echo "<h1>Error al subir la imagen</h1>";
+                } else {
+                    echo $nombre_imagen . " " . $tipo_imagen . " " . $tamano_imagen . " " . $ruta_temporal;
+                    $ruta_final = "./img/" . $nombre_imagen;
+                    move_uploaded_file($ruta_temporal, $ruta_final);
+                }
+            }
+        } else {
+            $err_imagen = "La imagen es obligatoria";
+        }
 
         #Validación precio ( solo puede aceptar numeros y un punto para los decimales)
 
@@ -134,7 +147,7 @@
             $cantidad = $temp_cantidad;
         }
 
-        if (isset($nombre) && isset($precio) && isset($descripcion) && isset($cantidad)) {
+        if (isset($nombre) && isset($precio) && isset($descripcion) && isset($cantidad) && isset($ruta_final)) {
 
 
             $sql = "INSERT INTO Productos (nombreProducto, precio, descripcion, cantidad, imagen) VALUES ('$nombre', '$precio', '$descripcion', '$cantidad', '$ruta_final')";
