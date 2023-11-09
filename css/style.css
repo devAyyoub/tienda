@@ -1,3 +1,41 @@
+@font-face {
+    font-family: 'Comfortaa-Medium';
+    src: url('../fonts/Comfortaa-Medium.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+  }
+
 *{
     text-align: center;
+    font-family:'Comfortaa-Medium';
 }
+
+body{
+    background: radial-gradient(circle, rgb(237, 235, 235) 0%, rgb(255, 255, 255) 100%);
+}
+
+nav{
+    background: radial-gradient(circle, rgb(104, 104, 104) 0%, rgb(92, 91, 91) 100%);
+    margin-bottom: 2%;
+}
+
+
+.navbar-brand{
+    font-weight: bold;
+    padding: 0%;
+}
+
+nav li a{
+    color: white;
+    text-decoration: none;
+    font-family:'Comfortaa-Medium';
+}
+nav li{
+    margin-left: 15%;
+    margin-top: 1%;
+    margin-bottom: 1%;
+}
+
+
+
+

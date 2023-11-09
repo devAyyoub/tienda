@@ -11,7 +11,29 @@
 </head>
 
 <body>
-
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Ayyoub's Market</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="container">
+                <div>
+                    <ul class="navbar-nav">
+                        <li>
+                            <a aria-current="page" href="listado_productos.php" aria-disabled="true">Productos</a>
+                        </li>
+                        <li>
+                            <a href="./sesiones/registro.php">Registrarse</a>
+                        </li>
+                        <li>
+                            <a href="./sesiones/iniciar_sesion.php">Iniciar sesión</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
     <div class="container">
         <h1>Insertar producto</h1>
         <form action="" method="post" enctype="multipart/form-data">
@@ -81,7 +103,7 @@
         $tipo_imagen = $_FILES["imagen"]["type"];
         $tamano_imagen = $_FILES["imagen"]["size"];
         $ruta_temporal = $_FILES["imagen"]["tmp_name"];
-       
+
         if (strlen($nombre_imagen) > 1) {
             if ($_FILES["imagen"]["error"] != 0) {
                 echo "Error al subir la imagen";

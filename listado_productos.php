@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Listado películas</title>
+    <title>Listado de productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="./css/style.css" rel="stylesheet">
     <?php require './bd/bd_productos.php' ?>
@@ -12,8 +12,30 @@
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Ayyoub's Market</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="container">
+                <div>
+                    <ul class="navbar-nav">
+                        <li>
+                            <a href="productos.php">Insertar producto</a>
+                        </li>
+                        <li>
+                            <a href="./sesiones/registro.php">Registrarse</a>
+                        </li>
+                        <li>
+                            <a href="./sesiones/iniciar_sesion.php">Iniciar sesión</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
     <div class="container">
-        <h1>Listado de productos</h1>
         <div>
             <table class="table table-striped table-hover">
                 <thead class="table table-dark">
@@ -33,7 +55,7 @@
                     ?>
 
                     <div class="container">
-                        <h2>Bienvenid@ <?php echo $usuario ?></h2>
+                        <h2>Bienvenido <?php echo $usuario ?> este es el listado de productos</h2>
                     </div>
                     <?php
                     $sql = "SELECT * FROM productos";
@@ -54,7 +76,7 @@
                     }
 
                     foreach ($productos as $producto) {
-                        echo "<tr class='table-info'>";
+                        echo "<tr>";
                         echo "<td>" . $producto->idProducto . "</td>";
                         echo "<td>" . $producto->nombreProducto . "</td>";
                         echo "<td>" . $producto->precio . "</td>";
