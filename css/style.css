@@ -47,12 +47,6 @@ nav .navbar-nav > li:first-child {
 }
 
 #input {
-    background: linear-gradient(
-    90deg,
-    rgb(164, 164, 171) 18%,
-    rgba(196, 203, 215, 0.418) 62%,
-    rgba(184, 194, 196, 0.406) 99%
-  );
     border: 2px solid black;
     font-weight: bold;
 }

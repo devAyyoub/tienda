@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesion</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    
+
     <link rel="shortcut icon" href="../img/grow-shop.png" />
     <?php require "../bd/bd_productos.php" ?>
     <link href="../css/style.css" rel="stylesheet">
@@ -53,6 +53,7 @@
         } else {
             while ($fila = $resultado->fetch_assoc()) {
                 $contrasena_cifrada = $fila["contrasena"];
+                $rol = $fila["rol"];
             }
 
             $acceso_valido = password_verify($contrasena, $contrasena_cifrada);
@@ -61,6 +62,7 @@
                 echo "Inicio de sesion correcto";
                 session_start();
                 $_SESSION["usuario"] = $usuario;
+                $_SESSION["rol"] = $rol;
                 header('location: ../listado_productos.php');
             } else {
             ?>
