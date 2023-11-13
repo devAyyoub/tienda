@@ -12,32 +12,44 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Ayyoub's Market</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="container">
-                <div>
-                    <ul class="navbar-nav">
-                        <li>
-                            <a href="productos.php">Insertar producto</a>
-                        </li>
-                        <li>
-                            <a href="./sesiones/registro.php">Registrarse</a>
-                        </li>
-                        <li>
-                            <a href="./sesiones/iniciar_sesion.php">Iniciar sesión</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Ayyoub's Market</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="productos.php"><b>Insertar producto</b></a>
+                </li>
+                <li class="nav-item">
+                    <?php
+                    session_start();
+                    if (isset($_SESSION['usuario'])) {
+                        echo '<a class="nav-link" href="./sesiones/cerrar_sesion.php"><b>Cerrar sesión</b></a>';
+                    } else {
+                        echo '<a class="nav-link" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a>';
+                    }
+                    ?>
+                </li>
+            </ul>
         </div>
-    </nav>
-    <div class="container">
+    </div>
+</nav>
+
+
+    <div class="bienvenido">
+        <?php
+        // session_start();
+        $usuario = $_SESSION["usuario"];
+        ?>
+        <h2 class="bienvenido-nombre">Bienvenido <?php echo $usuario ?> este es el listado de productos</h2>
+    </div>
+
+    <div class="container ">
         <div>
-            <table class="table table-striped table-hover">
+            <table class="table table-striped table-hover custom-table">
                 <thead class="table table-dark">
                     <tr>
                         <th>ID Producto</th>
@@ -49,14 +61,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    session_start();
-                    $usuario = $_SESSION["usuario"];
-                    ?>
 
-                    <div class="container">
-                        <h2>Bienvenido <?php echo $usuario ?> este es el listado de productos</h2>
-                    </div>
                     <?php
                     $sql = "SELECT * FROM productos";
                     $resultado = $conexion->query($sql);

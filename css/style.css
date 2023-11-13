@@ -1,41 +1,96 @@
 @font-face {
-    font-family: 'Comfortaa-Medium';
-    src: url('../fonts/Comfortaa-Medium.ttf') format('truetype');
-    font-style: normal;
-    font-weight: normal;
-  }
+  font-family: "Comfortaa-Medium";
+  src: url("../fonts/Comfortaa-Medium.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
+}
 
-*{
-    text-align: center;
-    font-family:'Comfortaa-Medium';
+* {
+  text-align: center;
+  font-family: "Comfortaa-Medium";
 }
 
 body{
-    background: radial-gradient(circle, rgb(237, 235, 235) 0%, rgb(255, 255, 255) 100%);
+    background-color: rgb(223, 235, 239);
 }
 
-nav{
-    background: radial-gradient(circle, rgb(104, 104, 104) 0%, rgb(92, 91, 91) 100%);
+nav {
+    background: linear-gradient(
+        90deg,
+        rgb(164, 164, 171) 18%,
+        rgba(101, 135, 197, 1) 62%,
+        rgba(0, 212, 255, 1) 99%
+    );
     margin-bottom: 2%;
 }
 
-
-.navbar-brand{
+.navbar-brand {
     font-weight: bold;
     padding: 0%;
+    font-family: "Comfortaa-Medium";
 }
 
-nav li a{
+nav li a {
     color: white;
     text-decoration: none;
-    font-family:'Comfortaa-Medium';
+    font-family: "Comfortaa-Medium";
 }
-nav li{
-    margin-left: 15%;
+
+nav li {
     margin-top: 1%;
     margin-bottom: 1%;
 }
 
+/* Alinea el primer elemento a la izquierda */
+nav .navbar-nav > li:first-child {
+    margin-left: 0;
+}
+
+#input {
+    background: linear-gradient(
+    90deg,
+    rgb(164, 164, 171) 18%,
+    rgba(196, 203, 215, 0.418) 62%,
+    rgba(184, 194, 196, 0.406) 99%
+  );
+    border: 2px solid black;
+    font-weight: bold;
+}
+
+.card{
+    background: linear-gradient(
+        90deg,
+        rgb(164, 164, 171) 18%,
+        rgba(234, 234, 234, 0.418) 62%,
+        rgba(0, 213, 255, 0.196) 99%
+    );
+    border: 1px solid black;
+}
+
+#login {
+    width: 50%;
+}
+
+
+.custom-table {
+    border-radius: 10px; /* Puedes ajustar el valor según tus preferencias */
+    overflow: hidden;   /* Para asegurarte de que el border-radius se aplique correctamente */
+}
+
+
+.bienvenido {
+    width: 70%;
+    margin-left: 15%;
+    margin-bottom: 2%;
+    background-color: lightgray;
+    text-align: center;
+    border-radius: 10px;
+    align-items: center;
+}
+
+.bienvenido-nombre{
+    padding: 2%;
+}
 
 
 

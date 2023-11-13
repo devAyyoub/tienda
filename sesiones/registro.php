@@ -11,29 +11,30 @@
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Ayyoub's Market</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="container">
-                <div>
-                    <ul class="navbar-nav">
-                        <li>
-                            <a href="../listado_productos.php">Productos</a>
-                        </li>
-                        <li>
-                            <a href="../productos.php">Insertar producto</a>
-                        </li>
-                        <li>
-                            <a href="iniciar_sesion.php">Iniciar sesion</a>
-                        </li>
-                    </ul>
-                </div>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                <ul class="navbar-nav">
+                    <!-- 
+                <li class="nav-item">
+                    <a class="nav-link" href="../listado_productos.php">Productos</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="../productos.php">Insertar producto</a>
+                </li>
+                -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="iniciar_sesion.php"><b>Iniciar sesión</b></a>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
+
     <?php
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $temp_usuario = $_POST['usuario'];
@@ -88,28 +89,56 @@
     }
 
     ?>
-    <div class="container">
-        <h1>Registrarse</h1>
-        <form action="" method="post">
+    <section class="text-center text-lg-start">
+        <style>
+            .cascading-right {
+                margin-right: -50px;
+            }
 
-            <div class="mb-3">
-                <label class="form-label">Usuario:</label>
-                <input class="form-control" type="text" name="usuario">
-                <?php if (isset($err_usuario)) echo $err_usuario ?>
+            @media (max-width: 991.98px) {
+                .cascading-right {
+                    margin-right: 0;
+                }
+            }
+        </style>
+
+        <div class="container py-1" id="login">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="card cascading-right" style="
+                        background: hsla(0, 0%, 100%, 0.55);
+                        backdrop-filter: blur(30px);">
+                        <div class="card-body p-5 shadow-5 text-center">
+                            <h2 class="fw-bold mb-5">Registrarse</h2>
+                            <form action="" method="post">
+
+                                <div class="mb-3">
+                                    <label class="form-label">Usuario:</label>
+                                    <input class="form-control" type="text" name="usuario" id="input">
+                                    <?php if (isset($err_usuario)) echo $err_usuario ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Contraseña:</label>
+                                    <input class="form-control" type="password" name="contrasena" id="input">
+                                    <?php if (isset($err_contrasena)) echo $err_contrasena ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Fecha de nacimiento:</label>
+                                    <input class="form-control" type="date" name="fecha" id="input">
+                                    <?php if (isset($err_fecha)) echo $err_fecha ?>
+                                </div>
+                                <input class="btn btn-primary" type="submit" value="Registrarse">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="https://images.unsplash.com/photo-1517495306984-f84210f9daa8?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8M3x8fGVufDB8fHx8fA%3D%3D" class="w-100 rounded-4 shadow-4" alt="" />
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Contraseña:</label>
-                <input class="form-control" type="password" name="contrasena">
-                <?php if (isset($err_contrasena)) echo $err_contrasena ?>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Fecha de nacimiento:</label>
-                <input class="form-control" type="date" name="fecha">
-                <?php if (isset($err_fecha)) echo $err_fecha ?>
-            </div>
-            <input class="btn btn-primary" type="submit" value="Registrarse">
-        </form>
-    </div>
+        </div>
+    </section>
     <?php
 
     if (isset($usuario) && isset($contrasena_cifrada) && isset($fecha)) {
