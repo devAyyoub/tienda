@@ -9,6 +9,7 @@
     <link href="./css/style.css" rel="stylesheet">
     <?php require './bd/bd_productos.php' ?>
     <?php require 'producto.php' ?>
+    <link rel="shortcut icon" href="./img/grow-shop.png" />
 </head>
 
 <body>
