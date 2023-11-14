@@ -10,6 +10,7 @@
     <link rel="shortcut icon" href="../img/grow-shop.png" />
     <?php require "../bd/bd_productos.php" ?>
     <link href="../css/style.css" rel="stylesheet">
+    <script defer src="../js/script.js"></script>
 </head>
 
 <body>

@@ -34,7 +34,7 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="listado_productos.php"><b>Productos</b></a>
                     </li>
                     <li class="nav-item">
@@ -74,58 +74,60 @@
     }
     ?>
 
-
     <div class="container ">
-        <div>
-            <table class="table table-striped table-hover custom-table">
-                <thead class="table table-dark">
-                    <tr>
-                        <th>Usuario</th>
-                        <th>Hash</th>
-                        <th>Fecha de nacimiento</th>
-                        <th>rol</th>
-                        <th></th>
+        <div class="row">
+            <div class="col-md-offset-1 col-md-20"> 
+                <div class="panel">
+                    <div class="panel-body table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <th>Hash</th>
+                                    <th>Fecha de nacimiento</th>
+                                    <th>rol</th>
+                                    <th></th>
 
-                    </tr>
-                </thead>
-                <tbody>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                    <?php
-                    $sql = "SELECT * FROM usuarios";
-                    $resultado = $conexion->query($sql);
+                                <?php
+                                $sql = "SELECT * FROM usuarios";
+                                $resultado = $conexion->query($sql);
 
-                    $usuarios = [];
+                                $usuarios = [];
 
-                    while ($fila = $resultado->fetch_assoc()) {
-                        $nuevo_usuario = new Usuario(
-                            $fila["usuario"],
-                            $fila["contrasena"],
-                            $fila["fechaNacimiento"],
-                            $fila["rol"]
-                        );
-                        array_push($usuarios, $nuevo_usuario);
-                    }
-
-                    foreach ($usuarios as $usuario) { ?>
-                        <tr>
-                            <td><?php echo $usuario->usuario ?> </td>
-                            <td><?php echo $usuario->contrasena ?> </td>
-                            <td><?php echo $usuario->fechaNacimiento ?> </td>
-                            <td><?php echo $usuario->rol ?> </td>
-                            <td>
-                                <form action="" method="post">
-                                    <input type="hidden" name="usuario" value="<?php echo $usuario->usuario ?>">
-                                    <input class="btn btn-warning" type="submit" value="Eliminar">
-                                </form>
-                            </td>
-                        </tr>
-                    <?php } ?>
-
-                </tbody>
-            </table>
+                                while ($fila = $resultado->fetch_assoc()) {
+                                    $nuevo_usuario = new Usuario(
+                                        $fila["usuario"],
+                                        $fila["contrasena"],
+                                        $fila["fechaNacimiento"],
+                                        $fila["rol"]
+                                    );
+                                    array_push($usuarios, $nuevo_usuario);
+                                }
+                                foreach ($usuarios as $usuario) { ?>
+                                    <tr>
+                                        <td><?php echo $usuario->usuario ?> </td>
+                                        <td><?php echo $usuario->contrasena ?> </td>
+                                        <td><?php echo $usuario->fechaNacimiento ?> </td>
+                                        <td><?php echo $usuario->rol ?> </td>
+                                        <td>
+                                            <form action="" method="post">
+                                                <input type="hidden" name="usuario" value="<?php echo $usuario->usuario ?>">
+                                                <input class="btn btn-danger" type="submit" value="Eliminar">
+                                            </form>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 

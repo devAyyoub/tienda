@@ -112,59 +112,63 @@
     ?>
 
     <!-- Section: Design Block -->
-<section class="text-center text-lg-start">
-  <style>
-    .cascading-right {
-      margin-right: -50px;
-    }
+    <section class="text-center text-lg-start">
+        <style>
+            .cascading-right {
+                margin-right: -50px;
+            }
 
-    @media (max-width: 991.98px) {
-      .cascading-right {
-        margin-right: 0;
-      }
-    }
-  </style>
+            @media (max-width: 991.98px) {
+                .cascading-right {
+                    margin-right: 0;
+                }
+            }
+        </style>
 
-  <div class="container py-1" id="login">
-    <div class="row g-0 align-items-center">
-      <div class="col-lg-6 mb-5 mb-lg-0">
-        <div class="card cascading-right" style="
+        <div class="container py-1" id="login">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="card cascading-right" style="
             background: hsla(0, 0%, 100%, 0.55);
             backdrop-filter: blur(30px);
             ">
-          <div class="card-body p-5 shadow-5 text-center">
-            <h2 class="fw-bold mb-5">Registrarse</h2>
-        <form action="" method="post">
-            <div class="mb-3">
-                <label class="form-label">Usuario:</label>
-                <input class="form-control" type="text" name="usuario" id="input">
-                <?php if (isset($err_usuario)) echo '<label class=text-danger>' . $err_usuario . '</label>' ?>
+                        <div class="card-body p-5 shadow-5 text-center">
+                            <h2 class="fw-bold mb-4">Registrarse</h2>
+                            <form action="" method="post">
+                                <div class="mb-3">
+                                    <label class="form-label">Usuario:</label>
+                                    <input class="form-control" type="text" name="usuario" id="input">
+                                    <?php if (isset($err_usuario)) echo '<label class=text-danger>' . $err_usuario . '</label>' ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Contraseña:</label>
+                                    <input class="form-control" type="password" name="contrasena" id="input">
+                                    <?php if (isset($err_contrasena)) echo '<label class=text-danger>' . $err_contrasena . '</label>' ?>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Fecha de nacimiento: </label>
+                                    <input type="date" name="fechaNacimiento" id="input">
+                                    <?php if (isset($err_fechaNacimiento)) echo '<label class=text-danger>' . $err_fechaNacimiento . '</label>' ?>
+                                </div>
+                                <input class="btn btn-primary" type="submit" value="Registrarse">
+                            </form>
+
+                            <div>
+                                <p class="mt-4">Ya tienes cuenta? <a href="iniciar_sesion.php" class="text-black-50 fw-bold">Inicia sesión</a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="https://img.freepik.com/premium-photo/white-horizon-background_926199-4910.jpg" class="w-100 rounded-4 shadow-4" alt="" />
+                </div>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Contraseña:</label>
-                <input class="form-control" type="password" name="contrasena" id="input">
-                <?php if (isset($err_contrasena)) echo '<label class=text-danger>' . $err_contrasena . '</label>' ?>
-            </div>
-            <div class="mb-3">
-                <label>Fecha de nacimiento: </label>
-                <input type="date" name="fechaNacimiento" id="input">
-                <?php if (isset($err_fechaNacimiento)) echo '<label class=text-danger>' . $err_fechaNacimiento . '</label>' ?>
-            </div>
-            <input class="btn btn-primary" type="submit" value="Registrarse">
-        </form>
-          </div>
         </div>
-      </div>
+    </section>
 
-      <div class="col-lg-6 mb-5 mb-lg-0">
-        <img src="https://img.freepik.com/premium-photo/white-horizon-background_926199-4910.jpg" class="w-100 rounded-4 shadow-4"
-          alt="" />
-      </div>
-    </div>
-  </div>
-</section>
 
-        
 
     <?php
     if (isset($usuario) && isset($contrasena_cifrada) && isset($fechaNacimiento)) {

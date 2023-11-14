@@ -59,6 +59,9 @@
         </div>
     </nav>
 
+    
+
+
     <div class="container">
         <h1>Insertar producto</h1>
         <form action="" method="post" enctype="multipart/form-data">

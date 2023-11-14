@@ -11,7 +11,7 @@
 }
 
 body{
-    background-color: rgb(223, 235, 239);
+    background: lightgray;
 }
 
 nav {
@@ -22,6 +22,7 @@ nav {
         rgba(0, 212, 255, 1) 99%
     );
     margin-bottom: 2%;
+    box-shadow: #2980b9 0px 0px 10px 0px;
 }
 
 .navbar-brand {
@@ -47,7 +48,6 @@ nav .navbar-nav > li:first-child {
 }
 
 #input {
-    border: 2px solid black;
     font-weight: bold;
 }
 
@@ -58,7 +58,6 @@ nav .navbar-nav > li:first-child {
         rgba(234, 234, 234, 0.418) 62%,
         rgba(0, 213, 255, 0.196) 99%
     );
-    border: 1px solid black;
 }
 
 #login {
@@ -76,7 +75,7 @@ nav .navbar-nav > li:first-child {
     width: 70%;
     margin-left: 15%;
     margin-bottom: 2%;
-    background-color: lightgray;
+    background-color: rgba(92, 132, 156, 0.445);
     text-align: center;
     border-radius: 10px;
     align-items: center;
@@ -86,12 +85,141 @@ nav .navbar-nav > li:first-child {
     padding: 2%;
 }
 
-table td {
+/* table td {
     background-color: rgb(143, 202, 221) !important;
     vertical-align: middle !important;
     border: 1px solid rgb(109, 109, 109) !important;
+
 } 
 
 table th {
     border: 1px solid rgb(109, 109, 109) !important;
+} */
+
+.demo{ font-family: 'Noto Sans', sans-serif; }
+.panel{
+    background: linear-gradient(to right, #2980b9, #2c3e50);
+    padding: 0;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 0 0 5px rgba(0,0,0,0.05),0 0 0 10px rgba(0,0,0,0.05);
+}
+.panel .panel-heading{
+    padding: 20px 15px;
+    border-radius: 10px 10px 0 0;
+    margin: 0;
+}
+.panel .panel-heading .title{
+    color: #fff;
+    font-size: 28px;
+    font-weight: 500;
+    text-transform: capitalize;
+    line-height: 40px;
+    margin: 0;
+}
+.panel .panel-heading .btn{
+    color: rgba(255,255,255,0.5);
+    background: transparent;
+    font-size: 16px;
+    text-transform: capitalize;
+    border: 2px solid #fff;
+    border-radius: 50px;
+    transition: all 0.3s ease 0s;
+}
+.panel .panel-heading .btn:hover{
+    color: #fff;
+    text-shadow: 3px 3px rgba(255,255,255,0.2);
+}
+.panel .panel-heading .form-control{
+    color: #fff;
+    background-color: transparent;
+    width: 35%;
+    height: 40px;
+    border: 2px solid #fff;
+    border-radius: 20px;
+    display: inline-block;
+    transition: all 0.3s ease 0s;
+}
+.panel .panel-heading .form-control:focus{
+    background-color: rgba(255,255,255,0.2);
+    box-shadow: none;
+    outline: none;
+}
+.panel .panel-heading .form-control::placeholder{
+    color: rgba(255,255,255,0.5);
+    font-size: 15px;
+    font-weight: 500;
+}
+.panel .panel-body{ padding: 0; }
+.panel .panel-body .table thead tr th{
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.2);
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    padding: 12px;
+    border: none;
+}
+.panel .panel-body .table tbody tr td{
+    color: #fff;
+    font-size: 15px;
+    padding: 10px 12px;
+    vertical-align: middle;
+    border: none;
+    background-color: transparent !important;
+}
+.panel .panel-body .table tbody tr:nth-child(even){ background-color: rgba(255,255,255,0.05); }
+.panel .panel-body .table tbody .action-list{
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+.panel .panel-body .table tbody .action-list li{
+    display: inline-block;
+    margin: 0 5px;
+}
+.panel .panel-body .table tbody .action-list li a{
+    color: #fff;
+    font-size: 15px;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease 0s;
+}
+.panel .panel-body .table tbody .action-list li a:hover{ text-shadow: 3px 3px 0 rgba(255,255,255,0.3); }
+.panel .panel-body .table tbody .action-list li a:before,
+.panel .panel-body .table tbody .action-list li a:after{
+    content: attr(data-tip);
+    color: #fff;
+    background-color: #111;
+    font-size: 12px;
+    padding: 5px 7px;
+    border-radius: 4px;
+    text-transform: capitalize;
+    display: none;
+    transform: translateX(-50%);
+    position: absolute;
+    left: 50%;
+    top: -32px;
+    transition: all 0.3s ease 0s;
+}
+.panel .panel-body .table tbody .action-list li a:after{
+    content: '';
+    height: 15px;
+    width: 15px;
+    padding: 0;
+    border-radius: 0;
+    transform: translateX(-50%) rotate(45deg);
+    top: -18px;
+    z-index: -1;
+}
+.panel .panel-body .table tbody .action-list li a:hover:before,
+.panel .panel-body .table tbody .action-list li a:hover:after{
+    display: block;
+}
+@media only screen and (max-width:767px){
+    .panel .panel-heading .title{
+        text-align: center;
+        margin: 0 0 10px;
+    }
+    .panel .panel-heading .btn_group{ text-align: center; }
 }
