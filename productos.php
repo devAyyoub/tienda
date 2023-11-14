@@ -12,6 +12,19 @@
 </head>
 
 <body>
+    <?php
+    session_start();
+    if (isset($_SESSION["usuario"])) {
+        $usuario = $_SESSION["usuario"];
+        $rol = $_SESSION["rol"];
+    } else {
+        $_SESSION["usuario"] = "invitado";
+        $usuario = $_SESSION["usuario"];
+        $_SESSION["rol"] = "cliente";
+        $rol = $_SESSION["rol"];
+    }
+
+    ?>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Ayyoub's Market</a>
@@ -23,9 +36,17 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="listado_productos.php" aria-disabled="true"><b>Productos</b></a>
                     </li>
+                    <li>
+                        <?php
+                        if ($rol == "admin") {
+                            echo '<li class="nav-item">';
+                            echo '<a class="nav-link" href="modificarUsuarios.php""><b>Modificar usuarios</b></a>';
+                            echo '</li>';
+                        }
+                        ?>
+                    </li>
                     <li class="nav-item">
                         <?php
-                        session_start();
                         if (isset($_SESSION['usuario'])) {
                             echo '<a class="nav-link" href="./sesiones/cerrar_sesion.php"><b>Cerrar sesión</b></a>';
                         } else {

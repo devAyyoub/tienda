@@ -27,7 +27,7 @@
 
     ?>
 
-    
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Ayyoub's Market</a>
@@ -37,7 +37,22 @@
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="productos.php"><b>Insertar producto</b></a>
+                        <?php
+                        if ($rol == "admin") {
+                            echo '<li class="nav-item">';
+                            echo '<a class="nav-link" href="productos.php"><b>Insertar producto</b></a>';
+                            echo '</li>';
+                        }
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        if ($rol == "admin") {
+                            echo '<li class="nav-item">';
+                            echo '<a class="nav-link" href="modificarUsuarios.php""><b>Modificar usuarios</b></a>';
+                            echo '</li>';
+                        }
+                        ?>
                     </li>
                     <li class="nav-item">
                         <?php
@@ -48,38 +63,42 @@
                         }
                         ?>
                     </li>
-                    <li>
-                        <?php
-                        if ($rol == "admin") {
-                            echo '<li class="nav-item">';
-                            echo '<a class="nav-link""><b>Soy admin</b></a>';
-                            echo '</li>';
-                        }
-                        ?>
-                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $idProducto = $_POST["idProducto"];
-
-        $sql3 = "INSERT INTO productocestas(idProducto, idCesta, cantidad) VALUES ('$idProducto', 7, 1)";
-        if($conexion->query($sql3)){
-            echo "Producto añadido a la cesta";
-        } else{
-            echo "Error: " . $sql3 . "<br>" . $conexion->error;
-        
-        }
-    }
-    ?>
-
     <div class="bienvenido">
 
         <h2 class="bienvenido-nombre">Bienvenido <?php echo $usuario ?> este es el listado de productos</h2>
     </div>
+
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $idProducto = $_POST["idProducto"];
+
+        $sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), 1)";
+
+        if ($conexion->query($sql3)) {
+            echo "Producto añadido a la cesta";
+        } else {
+            echo "Error: " . $sql3 . "<br>" . $conexion->error;
+        }
+    }
+    ?>
+    <?php
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $sql4 = "DELETE FROM productocestas WHERE idProducto = '$idProducto'";
+        $conexion->query($sql4);
+
+        $sql3 = "DELETE FROM productos WHERE idProducto = '$idProducto' ";
+        if ($conexion->query($sql3)) {
+            echo "Producto eliminado de la cesta";
+        } else {
+            echo "Error: " . $sql3 . "<br>" . $conexion->error;
+        }
+    }
+    ?>
 
     <div class="container ">
         <div>
@@ -93,6 +112,13 @@
                         <th>Cantidad</th>
                         <th>Imagen</th>
                         <th></th>
+                        <?php
+                        if ($rol == "admin") {
+                        ?>
+                            <th></th>
+                        <?php
+                        }
+                        ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -127,9 +153,22 @@
                                 <form action="" method="post">
                                     <input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
 
-                                    <input class="btn btn-warning" type="submit" value="Añadir">
+                                    <input class="btn btn-success" type="submit" value="Añadir">
                                 </form>
                             </td>
+                            <?php
+                            if ($rol == "admin") {
+                            ?>
+                                <td>
+                                    <form action="" method="post">
+                                        <input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
+
+                                        <input class="btn btn-danger" type="submit" value="Eliminar">
+                                    </form>
+                                </td>
+                            <?php
+                            }
+                            ?>
                         </tr>
                     <?php } ?>
 
