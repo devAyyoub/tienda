@@ -24,6 +24,7 @@
         $usuario = $_SESSION["usuario"];
         $_SESSION["rol"] = "cliente";
         $rol = $_SESSION["rol"];
+        header("Location: ./sesiones/iniciar_sesion.php");
     }
     ?>
 
@@ -74,11 +75,20 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $productocesta = $_POST["productocesta"];
 
-        $sql5 = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario' && idProducto='$productocesta')";
-        if ($conexion->query($sql5)) {
-            echo "Producto " . $productocesta . " eliminado correctamente";
+        // Obtener la cantidad del producto en la cesta
+        $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
+        $resultadoCantidad = $conexion->query($sqlCantidad);
+        $cantidadEliminada = $resultadoCantidad->fetch_assoc()["cantidad"];
+
+        // Eliminar el producto de la cesta
+        $sqlDelete = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
+        if ($conexion->query($sqlDelete)) {
+            echo "Producto en la cesta eliminado correctamente";
+            // Actualizar la cantidad del producto en la tabla de productos
+            $sqlUpdate = "UPDATE productos SET cantidad = cantidad + $cantidadEliminada WHERE idProducto = '$productocesta'";
+            $conexion->query($sqlUpdate);
         } else {
-            echo "Error: " . $sql5 . "<br>" . $conexion->error;
+            echo "Error al eliminar el producto de la cesta: " . $conexion->error;
         }
     }
     ?>
@@ -153,8 +163,8 @@
                                                     break;
                                                 }
                                             }
-                                         echo $nuevo_producto->nombreProducto ?>
-                                         </td>
+                                            echo $nuevo_producto->nombreProducto ?>
+                                        </td>
                                         <!-- <td><?php //echo $productocesta->idCesta 
                                                     ?> </td> -->
                                         <td><?php echo $productocesta->cantidad ?> </td>

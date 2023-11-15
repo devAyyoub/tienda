@@ -3,7 +3,7 @@
     {
         public int $idProducto;
         public string $idCesta;
-        public float $cantidad;
+        public int $cantidad;
     
         function __construct($idProducto, $idCesta, $cantidad)
         {

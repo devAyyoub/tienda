@@ -29,6 +29,7 @@
         $usuario = $_SESSION["usuario"];
         $_SESSION["rol"] = "cliente";
         $rol = $_SESSION["rol"];
+        header("Location: ./sesiones/iniciar_sesion.php");
     }
     ?>
 
@@ -112,6 +113,9 @@
 
             $sql = "select imagen from productos where idProducto = '$idProducto'";
             $resultado = $conexion->query($sql);
+            if (!$resultado) {
+                die("Error al obtener la imagen del producto");
+            }
             $ruta_img = $resultado->fetch_assoc()["imagen"];
 
             // Eliminación de la imagen asociada al producto si existe
@@ -156,11 +160,11 @@
             <div class="col-md-offset-1 col-md-20">
                 <div class="panel">
                     <div class="panel-body table-responsive">
-                        <table class="table">
-                            <?php
+                    <?php
                             // Verifica si hay productos para mostrar y agrega el encabezado de la tabla si es necesario
                             if (!empty($productos)) {
                             ?>
+                        <table class="table">         
                                 <thead>
                                     <tr>
                                         <th>ID Producto</th>
@@ -181,6 +185,8 @@
                                     </tr>
                                 </thead>
                             <?php
+                            } else{
+                                echo "<h3><b>No hay productos en la base de datos</b></h3>";
                             }
                             ?>
                             <tbody>
