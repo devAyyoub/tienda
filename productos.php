@@ -23,7 +23,9 @@
         $_SESSION["rol"] = "cliente";
         $rol = $_SESSION["rol"];
     }
-
+    if ($rol != "admin") {
+        header("Location: ./listado_productos.php");
+    }
     ?>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -59,7 +61,7 @@
         </div>
     </nav>
 
-    
+
 
 
     <div class="container">
@@ -82,7 +84,15 @@
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Cantidad</label>
-                <input type="text" class="form-control" id="exampleInputEmail1" name="cantidad">
+                <select class="form-control" id="" name="cantidad">
+                    <option value="" selected disabled>Selecciona una cantidad</option>
+                    <?php
+                    for ($i = 1; $i <= 5; $i++) {
+                        echo "<option value='$i'>$i</option>";
+                    }
+                    ?>
+                </select>
+                <!-- <input type="text" class="form-control" id="exampleInputEmail1" name="cantidad"> -->
                 <?php if (isset($err_cantidad)) echo "<p class='text-danger'>$err_cantidad</p>"; ?>
             </div>
             <div class="mb-3">

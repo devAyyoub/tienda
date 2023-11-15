@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="./css/style.css" rel="stylesheet">
     <?php require './bd/bd_productos.php' ?>
-    <?php require 'usuario.php' ?>
+    <?php require './objetos/usuario.php' ?>
     <link rel="shortcut icon" href="./img/grow-shop.png" />
 </head>
 
@@ -23,6 +23,9 @@
         $usuario = $_SESSION["usuario"];
         $_SESSION["rol"] = "cliente";
         $rol = $_SESSION["rol"];
+    }
+    if ($rol != "admin") {
+        header("Location: ./listado_productos.php");
     }
     ?>
 
@@ -39,6 +42,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="productos.php"><b>Insertar producto</b></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><b>Cesta</b></a>
                     </li>
                     <li class="nav-item">
                         <?php
@@ -64,7 +70,7 @@
             $sql3 = "DELETE FROM usuarios WHERE usuario='$usuario'";
 
             if ($conexion->query($sql4) && $conexion->query($sql3)) {
-                echo "Usuario eliminado correctamente";
+                echo "Usuario ".$usuario ." eliminado correctamente";
             } else {
                 echo "Error: " . $sql3 . " " . $sql4 . "<br>" . $conexion->error;
             }
@@ -113,12 +119,15 @@
                                         <td><?php echo $usuario->contrasena ?> </td>
                                         <td><?php echo $usuario->fechaNacimiento ?> </td>
                                         <td><?php echo $usuario->rol ?> </td>
+                                        <?php
+                                            if($usuario->rol == "cliente"){?>
                                         <td>
                                             <form action="" method="post">
                                                 <input type="hidden" name="usuario" value="<?php echo $usuario->usuario ?>">
                                                 <input class="btn btn-danger" type="submit" value="Eliminar">
                                             </form>
                                         </td>
+                                        <?php } ?>
                                     </tr>
                                 <?php } ?>
                             </tbody>

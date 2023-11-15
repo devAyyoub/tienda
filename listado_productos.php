@@ -11,7 +11,7 @@
     <link href="./css/style.css" rel="stylesheet">
     <!-- Inclusión de archivos PHP para la conexión a la base de datos y la clase Producto -->
     <?php require './bd/bd_productos.php' ?>
-    <?php require 'producto.php' ?>
+    <?php require './objetos/producto.php' ?>
     <!-- Icono de la página web -->
     <link rel="shortcut icon" href="./img/grow-shop.png" />
 </head>
@@ -61,6 +61,9 @@
                         ?>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><b>Cesta</b></a>
+                    </li>
+                    <li class="nav-item">
                         <?php
                         // Enlace para cerrar sesión o iniciar sesión según la condición
                         if (isset($_SESSION['usuario'])) {
@@ -70,6 +73,7 @@
                         }
                         ?>
                     </li>
+
                 </ul>
             </div>
         </div>
@@ -83,38 +87,43 @@
     <?php
     // Manejo de formularios POST para añadir productos a la cesta
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $idProducto = $_POST["idProducto"];
+        if (isset($_POST["addProduct"])) {
+            $idProducto = $_POST["idProducto"];
+            $cantidad = (int)$_POST["cantidad"];
 
-        $sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), 1)";
+            $sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), '$cantidad')";
 
-        if ($conexion->query($sql3)) {
-            echo "Producto añadido a la cesta";
-        } else {
-            echo "Error: " . $sql3 . "<br>" . $conexion->error;
+            if ($conexion->query($sql3)) {
+                echo "Producto " . $idProducto . " añadido a la cesta";
+                //actualiza la cantidad de productos
+                $sql4 = "UPDATE productos SET cantidad = cantidad - '$cantidad' WHERE idProducto = '$idProducto'";
+                $conexion->query($sql4);
+            } else {
+                echo "Error: " . $sql3 . "<br>" . $conexion->error;
+            }
         }
-    }
-    ?>
-    <?php
-    // Manejo de formularios POST para eliminar productos de la cesta y la base de datos
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $sql4 = "DELETE FROM productocestas WHERE idProducto = '$idProducto'";
-        $conexion->query($sql4);
+        // Manejo de formularios POST para eliminar productos de la cesta y la base de datos
+        if (isset($_POST["deleteProduct"])) {
+            $idProducto = $_POST["idProducto"];
+            $sql4 = "DELETE FROM productocestas WHERE idProducto = '$idProducto'";
+            $conexion->query($sql4);
 
-        $sql3 = "DELETE FROM productos WHERE idProducto = '$idProducto' ";
+            $sql3 = "DELETE FROM productos WHERE idProducto = '$idProducto' ";
 
-        $sql = "select imagen from productos where idProducto = '$idProducto'";
-        $resultado = $conexion->query($sql);
-        $ruta_img = $resultado->fetch_assoc()["imagen"];
+            $sql = "select imagen from productos where idProducto = '$idProducto'";
+            $resultado = $conexion->query($sql);
+            $ruta_img = $resultado->fetch_assoc()["imagen"];
 
-        // Eliminación de la imagen asociada al producto si existe
-        if (file_exists($ruta_img)) {
-            unlink($ruta_img);
-        }
-        // Confirmación de la eliminación del producto
-        if ($conexion->query($sql3)) {
-            echo "Producto eliminado de la cesta";
-        } else {
-            echo "Error: " . $sql3 . "<br>" . $conexion->error;
+            // Eliminación de la imagen asociada al producto si existe
+            if (file_exists($ruta_img)) {
+                unlink($ruta_img);
+            }
+            // Confirmación de la eliminación del producto
+            if ($conexion->query($sql3)) {
+                echo "Producto " . $idProducto . " eliminado de la cesta";
+            } else {
+                echo "Error: " . $sql3 . "<br>" . $conexion->error;
+            }
         }
     }
     ?>
@@ -184,14 +193,25 @@
                                         <td><?php echo $producto->nombreProducto ?> </td>
                                         <td><?php echo $producto->precio ?> </td>
                                         <td><?php echo $producto->descripcion ?> </td>
-                                        <td><?php echo $producto->cantidad ?> </td>
+                                        <!-- <td><?php echo $producto->cantidad ?> </td> -->
+                                        <td>
+                                            <form action="" method="post">
+                                                <select name="cantidad" class="select">
+                                                    <?php
+                                                    for ($i = 1; $i <= $producto->cantidad; $i++) {
+                                                        echo "<option value='$i'>$i</option>";
+                                                    }
+                                                    ?>
+                                                </select>
+                                        </td>
                                         <td><img witdh="50" height="100" src="<?php echo $producto->imagen ?>"></td>
                                         <td>
                                             <!-- Formulario para añadir el producto a la cesta -->
-                                            <form action="" method="post">
-                                                <input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
 
-                                                <input class="btn btn-success" type="submit" value="Añadir">
+                                            <input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
+                                            <input type="hidden" name="addProduct" value="true">
+
+                                            <input class="btn btn-success" type="submit" value="Añadir">
                                             </form>
                                         </td>
                                         <?php
@@ -202,6 +222,7 @@
                                                 <!-- Formulario para eliminar el producto -->
                                                 <form action="" method="post">
                                                     <input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
+                                                    <input type="hidden" name="deleteProduct" value="true">
 
                                                     <input class="btn btn-danger" type="submit" value="Eliminar">
                                                 </form>

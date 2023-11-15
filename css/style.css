@@ -223,3 +223,9 @@ table th {
     }
     .panel .panel-heading .btn_group{ text-align: center; }
 }
+.select {
+    width: 100%;
+    background-color: rgba(255,255,255,0.05);
+    border: 1px solid black;
+    border-radius: 10px;
+}

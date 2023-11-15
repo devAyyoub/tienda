@@ -20,14 +20,6 @@
             </button>
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                    <!-- 
-                <li class="nav-item">
-                    <a class="nav-link" href="../listado_productos.php">Productos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../productos.php">Insertar producto</a>
-                </li>
-                -->
                     <li class="nav-item">
                         <a class="nav-link" href="iniciar_sesion.php"><b>Iniciar sesión</b></a>
                     </li>
@@ -109,9 +101,20 @@
             }
         }
     }
-    ?>
 
-    <!-- Section: Design Block -->
+    
+    if (isset($usuario) && isset($contrasena_cifrada) && isset($fechaNacimiento)) {
+        $sql = "INSERT INTO usuarios(usuario, contrasena, fechaNacimiento) VALUES ('$usuario','$contrasena_cifrada','$fechaNacimiento')";
+        $sql2 = "INSERT INTO cestas(usuario, precioTotal) VALUES ('$usuario',0)";
+        if ($conexion->query($sql) && $conexion->query($sql2)) {
+    ?>
+        <?php
+            header('location: iniciar_sesion.php');
+            exit();
+        } 
+    }
+    
+    ?>
     <section class="text-center text-lg-start">
         <style>
             .cascading-right {
@@ -124,7 +127,6 @@
                 }
             }
         </style>
-
         <div class="container py-1" id="login">
             <div class="row g-0 align-items-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
@@ -160,36 +162,12 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <img src="https://img.freepik.com/premium-photo/white-horizon-background_926199-4910.jpg" class="w-100 rounded-4 shadow-4" alt="" />
                 </div>
             </div>
         </div>
     </section>
-
-
-
-    <?php
-    if (isset($usuario) && isset($contrasena_cifrada) && isset($fechaNacimiento)) {
-        $sql = "INSERT INTO usuarios(usuario, contrasena, fechaNacimiento) VALUES ('$usuario','$contrasena_cifrada','$fechaNacimiento')";
-        $sql2 = "INSERT INTO cestas(usuario, precioTotal) VALUES ('$usuario',0)";
-        if ($conexion->query($sql) && $conexion->query($sql2)) {
-    ?>
-            <!-- <div class="alert alert-success" role="alert">
-                Usuario registrado correctamente
-            </div> -->
-        <?php
-            header('location: iniciar_sesion.php');
-        } else {
-        ?>
-            <!-- <div class="alert alert-danger" role="alert">
-                Ha habido un error al registrarse
-            </div> -->
-    <?php
-        }
-    }
-    ?>
 </body>
 
 </html>
