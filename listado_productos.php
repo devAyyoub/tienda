@@ -64,7 +64,7 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><b>Cesta</b></a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item" id="logout">
                         <?php
                         // Enlace para cerrar sesión o iniciar sesión según la condición
                         if (isset($_SESSION['usuario'])) {

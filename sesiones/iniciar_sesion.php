@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="col-lg-6 mb-5 mb-lg-0">
-                    <img src="https://wallpaperaccess.com/full/6133030.jpg" class="w-100 rounded-4 shadow-4" alt="" />
+                    <img src="https://images.unsplash.com/photo-1600262606369-acb8a2cf69fb?q=80&w=1000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YXBwbGUlMjBpcGhvbmUlMjAxMSUyMHByb3xlbnwwfHwwfHx8MA%3D%3D" class="w-100 rounded-4 shadow-4" alt="" />
                 </div>
             </div>
         </div>

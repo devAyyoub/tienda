@@ -163,7 +163,7 @@
                     </div>
                 </div>
                 <div class="col-lg-6 mb-5 mb-lg-0">
-                    <img src="https://img.freepik.com/premium-photo/white-horizon-background_926199-4910.jpg" class="w-100 rounded-4 shadow-4" alt="" />
+                    <img src="https://images.unsplash.com/photo-1603389335957-10bea39c9d32?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8dGVjaG5vbG9neSUyMHByb2R1Y3RzfGVufDB8fDB8fHww&w=1000&q=80" class="w-100 rounded-4 shadow-4" alt="" />
                 </div>
             </div>
         </div>

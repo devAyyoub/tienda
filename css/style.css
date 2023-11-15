@@ -18,11 +18,11 @@ nav {
     background: linear-gradient(
         90deg,
         rgb(164, 164, 171) 18%,
-        rgba(101, 135, 197, 1) 62%,
-        rgba(0, 212, 255, 1) 99%
+        rgb(141, 145, 151) 62%,
+        rgb(229, 229, 229) 99%
     );
     margin-bottom: 2%;
-    box-shadow: #2980b9 0px 0px 10px 0px;
+    box-shadow: lightslategray 0px 0px 10px 0px;
 }
 
 .navbar-brand {
@@ -75,9 +75,8 @@ nav .navbar-nav > li:first-child {
     width: 70%;
     margin-left: 15%;
     margin-bottom: 2%;
-    background-color: rgba(92, 132, 156, 0.445);
+    background-color: transparent;
     text-align: center;
-    border-radius: 10px;
     align-items: center;
 }
 
@@ -98,7 +97,7 @@ table th {
 
 .demo{ font-family: 'Noto Sans', sans-serif; }
 .panel{
-    background: linear-gradient(to right, #2980b9, #2c3e50);
+    background: linear-gradient(to right, #818283, #3e4042);
     padding: 0;
     border-radius: 10px;
     border: none;

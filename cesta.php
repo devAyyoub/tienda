@@ -145,6 +145,7 @@
                                         <!-- <th>id Cesta</th> -->
                                         <th>Cantidad</th>
                                         <th></th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,9 +166,16 @@
                                             }
                                             echo $nuevo_producto->nombreProducto ?>
                                         </td>
-                                        <!-- <td><?php //echo $productocesta->idCesta 
-                                                    ?> </td> -->
                                         <td><?php echo $productocesta->cantidad ?> </td>
+                                        <td><?php
+                                            foreach ($productos as $nuevo_producto) {
+                                                if ($productocesta->idProducto == $nuevo_producto->idProducto) {
+                                                    break;
+                                                }
+                                            }
+                                            ?>
+                                            <img witdh="50" height="100" src="<?php echo $nuevo_producto->imagen ?>" alt="">
+                                        </td>
                                         <td>
                                             <form action="" method="post">
                                                 <input type="hidden" name="productocesta" value="<?php echo $productocesta->idProducto ?>">
