@@ -14,6 +14,8 @@
     <?php require './objetos/producto.php' ?>
     <!-- Icono de la página web -->
     <link rel="shortcut icon" href="./img/grow-shop.png" />
+    <!--data-aos-->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 
 <body>
@@ -64,6 +66,9 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><b>Cesta</b></a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true"><b>Catálogo</b></a>
+                    </li>
                     <li class="nav-item" id="logout">
                         <?php
                         // Enlace para cerrar sesión o iniciar sesión según la condición
@@ -73,16 +78,15 @@
                             echo '<a class="nav-link" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a>';
                         }
                         ?>
-                    </li>
-
+                    </li>                 
                 </ul>
             </div>
         </div>
     </nav>
 
     <!-- Mensaje de bienvenida con el nombre de usuario -->
-    <div class="bienvenido">
-        <h2 class="bienvenido-nombre">Bienvenido <?php echo $usuario ?> este es el listado de productos</h2>
+    <div class="at-container bienvenido">
+        <h2 class="at-item bienvenido-nombre">Bienvenido <?php echo $usuario ?> este es el listado de productos</h2>
     </div>
 
     <?php
@@ -154,17 +158,17 @@
     ?>
 
     <!-- Contenedor principal con una tabla para mostrar los productos -->
-    <div class="container ">
+    <div class="container" data-aos="zoom-in-up">
 
         <div class="row">
             <div class="col-md-offset-1 col-md-20">
                 <div class="panel">
                     <div class="panel-body table-responsive">
-                    <?php
-                            // Verifica si hay productos para mostrar y agrega el encabezado de la tabla si es necesario
-                            if (!empty($productos)) {
-                            ?>
-                        <table class="table">         
+                        <?php
+                        // Verifica si hay productos para mostrar y agrega el encabezado de la tabla si es necesario
+                        if (!empty($productos)) {
+                        ?>
+                            <table class="table">
                                 <thead>
                                     <tr>
                                         <th>ID Producto</th>
@@ -185,9 +189,9 @@
                                     </tr>
                                 </thead>
                             <?php
-                            } else{
-                                echo "<h3><b>No hay productos en la base de datos</b></h3>";
-                            }
+                        } else {
+                            echo "<h3><b>No hay productos en la base de datos</b></h3>";
+                        }
                             ?>
                             <tbody>
 
@@ -197,7 +201,7 @@
                                     <tr>
                                         <td><?php echo $producto->idProducto ?> </td>
                                         <td><?php echo $producto->nombreProducto ?> </td>
-                                        <td><?php echo $producto->precio ?> </td>
+                                        <td><?php echo $producto->precio." €" ?> </td>
                                         <td><?php echo $producto->descripcion ?> </td>
                                         <!-- <td><?php echo $producto->cantidad ?> </td> -->
                                         <td>
@@ -240,7 +244,7 @@
                                 <?php } ?>
 
                             </tbody>
-                        </table>
+                            </table>
                     </div>
                 </div>
             </div>
@@ -248,6 +252,9 @@
     </div>
     <!-- Inclusión de scripts de Bootstrap para funcionalidad adicional -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
 </body>
-
 </html>

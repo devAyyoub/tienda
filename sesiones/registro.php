@@ -9,6 +9,8 @@
     <?php require "../bd/bd_productos.php" ?>
     <link href="../css/style.css" rel="stylesheet">
     <link rel="shortcut icon" href="../img/grow-shop.png" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -127,7 +129,7 @@
                 }
             }
         </style>
-        <div class="container py-1" id="login">
+        <div class="container py-1" data-aos="fade-down" id="login">
             <div class="row g-0 align-items-center">
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <div class="card cascading-right" style="
@@ -168,6 +170,10 @@
             </div>
         </div>
     </section>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
 </body>
 
 </html>

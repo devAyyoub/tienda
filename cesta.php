@@ -11,6 +11,7 @@
     <?php require './objetos/productoCesta.php' ?>
     <?php require './objetos/producto.php' ?>
     <link rel="shortcut icon" href="./img/grow-shop.png" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
 
 <body>
@@ -129,7 +130,7 @@
     }
     ?>
 
-    <div class="container ">
+    <div class="container" data-aos="zoom-in-up">
         <div class="row">
             <div class="col-md-offset-1 col-md-20">
                 <div class="panel">
@@ -151,7 +152,7 @@
                                 <tbody>
                                 <?php
                             } else {
-                                echo "<h3><b>No hay productos en la cesta</b></h3>";
+                                echo "<h3 class='at-item'><b>No hay productos en la cesta</b></h3>";
                             }
                                 ?>
 
@@ -192,6 +193,11 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
 </body>
 
 </html>

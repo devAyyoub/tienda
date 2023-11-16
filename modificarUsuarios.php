@@ -47,6 +47,9 @@
                         <a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><b>Cesta</b></a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true"><b>Catálogo</b></a>
+                    </li>
+                    <li class="nav-item">
                         <?php
                         if (isset($_SESSION['usuario'])) {
                             echo '<a class="nav-link" href="./sesiones/cerrar_sesion.php"><b>Cerrar sesión</b></a>';
