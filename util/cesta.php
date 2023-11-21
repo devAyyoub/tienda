@@ -77,22 +77,33 @@
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $productocesta = $_POST["productocesta"];
+        if (isset($_POST["delete"])) {
+            $productocesta = $_POST["productocesta"];
 
-        // Obtener la cantidad del producto en la cesta
-        $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
-        $resultadoCantidad = $conexion->query($sqlCantidad);
-        $cantidadEliminada = $resultadoCantidad->fetch_assoc()["cantidad"];
+            // Obtener la cantidad del producto en la cesta
+            $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
+            $resultadoCantidad = $conexion->query($sqlCantidad);
+            $cantidadEliminada = $resultadoCantidad->fetch_assoc()["cantidad"];
 
-        // Eliminar el producto de la cesta
-        $sqlDelete = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
-        if ($conexion->query($sqlDelete)) {
-            echo "Producto en la cesta eliminado correctamente";
-            // Actualizar la cantidad del producto en la tabla de productos
-            $sqlUpdate = "UPDATE productos SET cantidad = cantidad + $cantidadEliminada WHERE idProducto = '$productocesta'";
-            $conexion->query($sqlUpdate);
-        } else {
-            echo "Error al eliminar el producto de la cesta: " . $conexion->error;
+            // Eliminar el producto de la cesta
+            $sqlDelete = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
+            if ($conexion->query($sqlDelete)) {
+                echo "Producto en la cesta eliminado correctamente";
+                // Actualizar la cantidad del producto en la tabla de productos
+                $sqlUpdate = "UPDATE productos SET cantidad = cantidad + $cantidadEliminada WHERE idProducto = '$productocesta'";
+                $conexion->query($sqlUpdate);
+            } else {
+                echo "Error al eliminar el producto de la cesta: " . $conexion->error;
+            }
+        }
+        if (isset($_POST["buy"])) {
+            //inserta en la tabla pedidos los productos de la cesta
+            $sql = "INSERT INTO pedidos (usuario, precioTotal, fechaPedido) SELECT usuario, SUM(precio*cantidad), NOW() FROM productocestas INNER JOIN productos ON productocestas.idProducto = productos.idProducto WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') GROUP BY usuario";
+            if ($conexion->query($sql)) {
+                echo "Pedido realizado correctamente";
+            } else {
+                echo "Error al realizar el pedido: " . $conexion->error;
+            }   
         }
     }
     ?>
@@ -183,7 +194,8 @@
                                         <td>
                                             <form action="" method="post">
                                                 <input type="hidden" name="productocesta" value="<?php echo $productocesta->idProducto ?>">
-                                                <input class="btn btn-danger" type="submit" value="Eliminar">
+                                                <input class="btn btn-danger" type="submit" name="delete" value="Eliminar">
+                                                <input class="btn btn-success" type="submit" name="buy" value="enviar">
                                             </form>
                                         </td>
                                     </tr>

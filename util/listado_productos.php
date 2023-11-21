@@ -78,7 +78,7 @@
                             echo '<a class="nav-link" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a>';
                         }
                         ?>
-                    </li>                 
+                    </li>
                 </ul>
             </div>
         </div>
@@ -96,8 +96,8 @@
             $idProducto = $_POST["idProducto"];
             $cantidad = (int)$_POST["cantidad"];
 
-            $sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), '$cantidad')";
-
+            //inserta la cantidad de producto en la cesta y si se vuelve a añadir el mismo producto se actualiza la cantidad
+            $sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), '$cantidad') ON DUPLICATE KEY UPDATE cantidad = cantidad + '$cantidad'";
             if ($conexion->query($sql3)) {
                 echo "Producto " . $idProducto . " añadido a la cesta";
                 //actualiza la cantidad de productos
@@ -201,11 +201,16 @@
                                     <tr>
                                         <td><?php echo $producto->idProducto ?> </td>
                                         <td><?php echo $producto->nombreProducto ?> </td>
-                                        <td><?php echo $producto->precio." €" ?> </td>
+                                        <td><?php echo $producto->precio . " €" ?> </td>
                                         <td><?php echo $producto->descripcion ?> </td>
                                         <!-- <td><?php echo $producto->cantidad ?> </td> -->
                                         <td>
                                             <form action="" method="post">
+                                                <?php 
+                                                if($producto->cantidad == 0){
+                                                    echo "<p>No hay stock</p>";
+                                                }else{
+                                                    ?>
                                                 <select name="cantidad" class="select">
                                                     <?php
                                                     for ($i = 1; $i <= $producto->cantidad; $i++) {
@@ -213,6 +218,9 @@
                                                     }
                                                     ?>
                                                 </select>
+                                                <?php
+                                                }
+                                                ?>
                                         </td>
                                         <td><img witdh="50" height="100" src="<?php echo $producto->imagen ?>"></td>
                                         <td>
@@ -257,4 +265,5 @@
         AOS.init();
     </script>
 </body>
+
 </html>
