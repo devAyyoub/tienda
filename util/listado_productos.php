@@ -126,6 +126,10 @@
             if (file_exists($ruta_img)) {
                 unlink($ruta_img);
             }
+            //eliminar el producto de la tabla lineaspedidos
+            $sql5 = "DELETE FROM lineaspedidos WHERE idProducto = '$idProducto'";
+            $conexion->query($sql5);
+
             // Confirmación de la eliminación del producto
             if ($conexion->query($sql3)) {
                 echo "Producto " . $idProducto . " eliminado de la cesta";

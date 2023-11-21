@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modificar usurios</title>
+    <title>Cesta</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <link href="../views/styles/style.css" rel="stylesheet">
     <?php require './bd/bd_productos.php' ?>
@@ -53,7 +53,7 @@
                         <?php
                         if ($rol == "admin") {
                             echo '<li class="nav-item">';
-                            echo '<a class="nav-link" href="modificarUsuarios.php""><b>Modificar usuarios</b></a>';
+                            echo '<a class="nav-link" href="modificarUsuarios.php"><b>Modificar usuarios</b></a>';
                             echo '</li>';
                         }
                         ?>
@@ -96,14 +96,39 @@
                 echo "Error al eliminar el producto de la cesta: " . $conexion->error;
             }
         }
-        if (isset($_POST["buy"])) {
-            //inserta en la tabla pedidos los productos de la cesta
-            $sql = "INSERT INTO pedidos (usuario, precioTotal, fechaPedido) SELECT usuario, SUM(precio*cantidad), NOW() FROM productocestas INNER JOIN productos ON productocestas.idProducto = productos.idProducto WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') GROUP BY usuario";
-            if ($conexion->query($sql)) {
-                echo "Pedido realizado correctamente";
-            } else {
-                echo "Error al realizar el pedido: " . $conexion->error;
-            }   
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            if (isset($_POST["buy"])) {
+                // Insertar un nuevo pedido
+                $sqlInsertPedido = "INSERT INTO pedidos (usuario, precioTotal, fechaPedido) 
+                                    SELECT '$usuario', SUM(productos.precio * productocestas.cantidad), NOW()
+                                    FROM productocestas 
+                                    INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
+                                    WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+
+                if ($conexion->query($sqlInsertPedido)) {
+                    // Obtener el ID autogenerado del pedido
+                    $idPedido = $conexion->insert_id;
+
+                    // Insertar líneas de pedido en la tabla lineaspedidos
+                    $sqlInsertLineasPedido = "INSERT INTO lineaspedidos (idProducto, idPedido, precioUnitario, cantidad) 
+                            SELECT productocestas.idProducto, $idPedido, productos.precio, productocestas.cantidad
+                            FROM productocestas 
+                            INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
+                            WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+
+                    if ($conexion->query($sqlInsertLineasPedido)) {
+                        // Eliminar todos los productos de la cesta
+                        $sqlVaciarCesta = "DELETE FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+                        $conexion->query($sqlVaciarCesta);
+
+                        echo "Pedido realizado correctamente";
+                    } else {
+                        echo "Error al insertar líneas de pedido: " . $conexion->error;
+                    }
+                } else {
+                    echo "Error al realizar el pedido: " . $conexion->error;
+                }
+            }
         }
     }
     ?>
@@ -159,49 +184,56 @@
                                         <th>Producto</th>
                                         <!-- <th>id Cesta</th> -->
                                         <th>Cantidad</th>
+                                        <th>Precio</th>
                                         <th></th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <?php
-                            } else {
-                                echo "<h3 class='at-item'><b>No hay productos en la cesta</b></h3>";
-                            }
-                                ?>
 
-                                <?php
-                                foreach ($productoscesta as $productocesta) { ?>
-                                    <tr>
-                                        <td><?php
-                                            foreach ($productos as $nuevo_producto) {
-                                                if ($productocesta->idProducto == $nuevo_producto->idProducto) {
-                                                    break;
+
+                                    <?php
+                                    foreach ($productoscesta as $productocesta) { ?>
+                                        <tr>
+                                            <td><?php
+                                                foreach ($productos as $nuevo_producto) {
+                                                    if ($productocesta->idProducto == $nuevo_producto->idProducto) {
+                                                        break;
+                                                    }
                                                 }
-                                            }
-                                            echo $nuevo_producto->nombreProducto ?>
-                                        </td>
-                                        <td><?php echo $productocesta->cantidad ?> </td>
-                                        <td><?php
-                                            foreach ($productos as $nuevo_producto) {
-                                                if ($productocesta->idProducto == $nuevo_producto->idProducto) {
-                                                    break;
+                                                echo $nuevo_producto->nombreProducto ?>
+                                            </td>
+                                            <td><?php echo $productocesta->cantidad ?> </td>
+                                            <td><?php echo $nuevo_producto->precio . ' €' ?> </td>
+                                            <td><?php
+                                                foreach ($productos as $nuevo_producto) {
+                                                    if ($productocesta->idProducto == $nuevo_producto->idProducto) {
+                                                        break;
+                                                    }
                                                 }
-                                            }
-                                            ?>
-                                            <img witdh="50" height="100" src="<?php echo $nuevo_producto->imagen ?>" alt="">
-                                        </td>
-                                        <td>
-                                            <form action="" method="post">
-                                                <input type="hidden" name="productocesta" value="<?php echo $productocesta->idProducto ?>">
-                                                <input class="btn btn-danger" type="submit" name="delete" value="Eliminar">
-                                                <input class="btn btn-success" type="submit" name="buy" value="enviar">
-                                            </form>
-                                        </td>
-                                    </tr>
-                                <?php } ?>
+                                                ?>
+                                                <img witdh="50" height="100" src="<?php echo $nuevo_producto->imagen ?>" alt="">
+                                            </td>
+                                            <td>
+                                                <form action="" method="post">
+                                                    <input type="hidden" name="productocesta" value="<?php echo $productocesta->idProducto ?>">
+                                                    <input class="btn btn-danger" type="submit" name="delete" value="Eliminar">
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php } ?>
+
                                 </tbody>
                             </table>
+                            <form action="" method="post">
+                                <input class="btn btn-success" type="submit" name="buy" value="Enviar">
+                            </form>
+                        <?php
+                        } else {
+                            echo "<h3 class='at-item'><b>No hay productos en la cesta</b></h3>";
+                        }
+                        ?>
+
                     </div>
                 </div>
             </div>
