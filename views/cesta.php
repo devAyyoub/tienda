@@ -6,10 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cesta</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link href="../views/styles/style.css" rel="stylesheet">
-    <?php require './bd/bd_productos.php' ?>
-    <?php require './objetos/productoCesta.php' ?>
-    <?php require './objetos/producto.php' ?>
+    <link href="./styles/style.css" rel="stylesheet">
+    <?php require '../util/bd/bd_productos.php' ?>
+    <?php require '../util/objetos/productoCesta.php' ?>
+    <?php require '../util/objetos/producto.php' ?>
     <link rel="shortcut icon" href="./img/grow-shop.png" />
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
@@ -31,7 +31,7 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Ayyoub's Market</a>
+            <a class="navbar-brand" href="listado_productos.php">Ayyoub's Market</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -225,7 +225,7 @@
 
                                 </tbody>
                             </table>
-                            <form action="" method="post">
+                            <form action="" method="post" class="mb-3">
                                 <input class="btn btn-success" type="submit" name="buy" value="Enviar">
                             </form>
                         <?php

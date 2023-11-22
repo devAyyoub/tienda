@@ -9,13 +9,13 @@
     <title>Catálogo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <!-- Inclusión de archivos PHP para la conexión a la base de datos y la clase Producto -->
-    <?php require './bd/bd_productos.php' ?>
-    <?php require './objetos/producto.php' ?>
+    <?php require '../util/bd/bd_productos.php' ?>
+    <?php require '../util/objetos/producto.php' ?>
     <!-- Icono de la página web -->
     <link rel="shortcut icon" href="./img/grow-shop.png" />
     <!--data-aos-->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link href="../views/styles/style.css" rel="stylesheet">
+    <link href="./styles/style.css" rel="stylesheet">
 </head>
 
 <body>
@@ -38,14 +38,14 @@
     <!-- Barra de navegación utilizando Bootstrap -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Ayyoub's Market</a>
+            <a class="navbar-brand" href="listado_productos.php">Ayyoub's Market</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <!-- Menú de navegación y enlaces según el rol del usuario -->
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
-                <li class="nav-item">
+                    <li class="nav-item">
                         <a class="nav-link" href="listado_productos.php"><b>Productos</b></a>
                     </li>
                     <li class="nav-item">
@@ -79,7 +79,7 @@
                         }
                         ?>
                     </li>
-                        
+
                 </ul>
             </div>
         </div>
@@ -91,8 +91,13 @@
             $idProducto = $_POST["idProducto"];
             $cantidad = (int)$_POST["cantidad"];
 
-            $sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), '$cantidad')";
+            //si el usuario es invitado se le redirige a iniciar sesion
+            if ($usuario == "invitado") {
+                header("Location: ./sesiones/iniciar_sesion.php");
+            }
 
+            //inserta la cantidad de producto en la cesta y si se vuelve a añadir el mismo producto se actualiza la cantidad
+            $sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), '$cantidad') ON DUPLICATE KEY UPDATE cantidad = cantidad + '$cantidad'";
             if ($conexion->query($sql3)) {
                 echo "Producto " . $idProducto . " añadido a la cesta";
                 //actualiza la cantidad de productos
@@ -121,6 +126,10 @@
             if (file_exists($ruta_img)) {
                 unlink($ruta_img);
             }
+            //eliminar el producto de la tabla lineaspedidos
+            $sql5 = "DELETE FROM lineaspedidos WHERE idProducto = '$idProducto'";
+            $conexion->query($sql5);
+
             // Confirmación de la eliminación del producto
             if ($conexion->query($sql3)) {
                 echo "Producto " . $idProducto . " eliminado de la cesta";
@@ -163,26 +172,34 @@
                                 <img src="<?php echo $producto->imagen; ?>" alt="" height="300" width="250" />
                             </a>
                             <br />
-                            <h4>                   
-                                    <p class="mt-2"><b><?php echo $producto->nombreProducto; ?></b><br />    </p>                              
-                                    <p><?php echo $producto->descripcion; ?></p>
-                                    <p><?php echo $producto->precio . " €"; ?></p>
-                                
+                            <h4>
+                                <p class="mt-2"><b><?php echo $producto->nombreProducto; ?></b><br /> </p>
+                                <p><?php echo $producto->descripcion; ?></p>
+                                <p><?php echo $producto->precio . " €"; ?></p>
+
                             </h4>
                             <form action="" method="POST">
                                 <div class="mb-2"> <!-- Agrega la clase mb-2 para agregar margen en la parte inferior -->
-                                    <select name="cantidad" class="form-control"> <!-- Elimina la clase mr-2 para quitar el margen a la derecha -->
-                                        <option value="" selected disabled>Selecciona una cantidad</option>
-                                        <?php
-                                        for ($i = 1; $i <= $producto->cantidad; $i++) {
-                                            echo "<option value='$i'>$i</option>";
-                                        }
-                                        ?>
-                                    </select>
+                                <?php 
+                                                if($producto->cantidad == 0){
+                                                    echo "<p>No hay stock</p>";
+                                                }else{
+                                                    ?>
+                                                <select name="cantidad" class="form-control">
+                                                    <?php
+                                                    for ($i = 1; $i <= $producto->cantidad; $i++) {
+                                                        echo "<option value='$i'>$i</option>";
+                                                    }
+                                                    ?>
+                                                </select>
+                                                <?php
+                                                }
+                                                ?>
+                                                
                                 </div>
                                 <input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
                                 <input type="hidden" name="addProduct" value="true">
-                                <input class="btn btn-success" type="submit" value="Añadir">
+                                <input class="btn btn-success" type="submit" value="Añadir" <?php if($producto->cantidad == 0){ echo 'disabled';} else { echo 'enabled';}?> >
                             </form>
                         </div>
                     </td>

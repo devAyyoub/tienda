@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrarse</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <?php require "../bd/bd_productos.php" ?>
+    <?php require "../../util/bd/bd_productos.php" ?>   
     <link href="../../views/styles/style.css" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 </head>
@@ -14,7 +14,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Ayyoub's Market</a>
+            <a class="navbar-brand" href="./listado_productos.php">Ayyoub's Market</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -61,9 +61,9 @@
             if (strlen($temp_contrasena) > 255 || strlen($temp_contrasena) < 4) {
                 $err_contrasena = "La contraseña debe tener minimo 4 caracteres y maximo 255";
             } else {
-                $patron = "/^[A-Za-z0-9]{4,255}$/";
+                $patron =  "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,20}$/";
                 if (!preg_match($patron, $temp_contrasena)) {
-                    $err_contrasena = "La contraseña solo pude contener letras o numeros";
+                    $err_contrasena = "la contraseña tiene que tener mínimo un carácter en minúscula, uno en mayúscula, un número y un carácter especial";
                 } else {
                     $contrasena = $temp_contrasena;
                     $contrasena_cifrada = password_hash($contrasena, PASSWORD_DEFAULT);

@@ -262,3 +262,6 @@ div.at-container {
   color: black;
 }
 
+.btn-with-margin {
+  margin-bottom: 10px; /* Puedes ajustar el valor según tus necesidades */
+}

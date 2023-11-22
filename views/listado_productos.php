@@ -8,10 +8,10 @@
     <!-- Título de la página y enlaces a hojas de estilo de Bootstrap y personalizada -->
     <title>Listado de productos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link href="../views/styles/style.css" rel="stylesheet">
+    <link href="./styles/style.css" rel="stylesheet">
     <!-- Inclusión de archivos PHP para la conexión a la base de datos y la clase Producto -->
-    <?php require './bd/bd_productos.php' ?>
-    <?php require './objetos/producto.php' ?>
+    <?php require '../util/bd/bd_productos.php' ?>
+    <?php require '../util/objetos/producto.php' ?>
     <!-- Icono de la página web -->
     <link rel="shortcut icon" href="./img/grow-shop.png" />
     <!--data-aos-->
@@ -38,7 +38,7 @@
     <!-- Barra de navegación utilizando Bootstrap -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">Ayyoub's Market</a>
+            <a class="navbar-brand" href="">Ayyoub's Market</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -96,6 +96,10 @@
             $idProducto = $_POST["idProducto"];
             $cantidad = (int)$_POST["cantidad"];
 
+            //si el usuario es invitado se le redirige a iniciar sesion
+            if ($usuario == "invitado") {
+                header("Location: ./sesiones/iniciar_sesion.php");
+            }
             //inserta la cantidad de producto en la cesta y si se vuelve a añadir el mismo producto se actualiza la cantidad
             $sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), '$cantidad') ON DUPLICATE KEY UPDATE cantidad = cantidad + '$cantidad'";
             if ($conexion->query($sql3)) {
@@ -233,7 +237,8 @@
                                             <input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
                                             <input type="hidden" name="addProduct" value="true">
 
-                                            <input class="btn btn-success" type="submit" value="Añadir">
+                                            <input class="btn btn-success" type="submit" value="Añadir" <?php if($producto->cantidad == 0){ echo 'disabled';} else { echo 'enabled';}?> >
+                                            
                                             </form>
                                         </td>
                                         <?php
@@ -246,7 +251,7 @@
                                                     <input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
                                                     <input type="hidden" name="deleteProduct" value="true">
 
-                                                    <input class="btn btn-danger" type="submit" value="Eliminar">
+                                                    <input class="btn btn-danger btn-with-margin" type="submit" value="Eliminar">
                                                 </form>
                                             </td>
                                         <?php
