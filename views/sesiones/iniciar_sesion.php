@@ -62,7 +62,7 @@
                 session_start();
                 $_SESSION["usuario"] = $usuario;
                 $_SESSION["rol"] = $rol;
-                header('location: ../../views/listado_productos.php');
+                header('location: ../../views/cesta.php');
             } else {
             ?>
                 <div class="alert alert-danger" role="alert">
