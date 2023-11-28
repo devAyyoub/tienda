@@ -31,8 +31,11 @@
         $usuario = $_SESSION["usuario"];
         $_SESSION["rol"] = "cliente";
         $rol = $_SESSION["rol"];
-        header("Location: ./sesiones/iniciar_sesion.php");
     }
+    if ($usuario == "invitado") {
+		header("Location: ./sesiones/iniciar_sesion.php");
+		exit(); // Asegura que el script se detenga después de la redirección
+	}
     ?>
 
     <!-- Barra de navegación utilizando Bootstrap -->

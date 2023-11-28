@@ -41,9 +41,15 @@
         $usuario = $_SESSION["usuario"];
         $_SESSION["rol"] = "cliente";
         $rol = $_SESSION["rol"];
-        header("Location: ./sesiones/iniciar_sesion.php");
     }
+
+    if ($usuario == "invitado") {
+		header("Location: ./sesiones/iniciar_sesion.php");
+		exit(); // Asegura que el script se detenga después de la redirección
+	}
     ?>
+
+    
     <!-- Start Header/Navigation -->
     <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
