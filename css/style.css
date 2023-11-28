@@ -896,3 +896,12 @@ textarea {
   border-radius: 50%;
   background: rgba(59, 93, 80, 0.2);
 }
+.dropdown-menu li a.dropdown-item {
+  color: black !important; /* Agregamos !important para asegurar prioridad */
+}
+.empty-cart-message {
+  padding: 20px;
+  margin-bottom: 300px;
+}
+
+

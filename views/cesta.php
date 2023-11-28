@@ -12,7 +12,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="author" content="Untree.co">
-    <link rel="shortcut icon" href="favicon.png">
+    <link rel="shortcut icon" href="../images/ordenador-portatil.png">
 
     <meta name="description" content="" />
     <meta name="keywords" content="bootstrap, bootstrap4" />
@@ -23,10 +23,11 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link href="../css/tiny-slider.css" rel="stylesheet">
     <link href="../css/style.css" rel="stylesheet">
-    <title>Furni Free Bootstrap 5 Template for Furniture and Interior Design Websites by Untree.co </title>
+    <title>Cesta</title>
     <?php require '../util/bd/bd_productos.php' ?>
     <?php require '../util/objetos/productoCesta.php' ?>
     <?php require '../util/objetos/producto.php' ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body>
@@ -55,7 +56,7 @@
 
             <div class="collapse navbar-collapse" id="navbarsFurni">
                 <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                <li class="nav-item">
+                    <li class="nav-item">
                         <?php
                         if ($rol == "admin") {
                             echo '<li class="nav-item">';
@@ -83,17 +84,23 @@
                         ?>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true"><b>Catálogo</b></a>
+                        <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true">Catálogo</a>
                     </li>
-                    <li class="nav-item">
-                        <?php
-                        if (isset($_SESSION['usuario'])) {
-                            echo '<a class="nav-link" href="./sesiones/cerrar_sesion.php"><b>Cerrar sesión</b></a>';
-                        } else {
-                            echo '<a class="nav-link" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a>';
-                        }
-                        ?>
-                    </li>
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="../images/user.svg" alt="">
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <?php
+                            // Enlace para cerrar sesión o iniciar sesión según la condición
+                            if (isset($_SESSION['usuario'])) {
+                            ?>
+                                <li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
+                            <?php } else { ?>
+                                <li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
+                            <?php } ?>
+                        </ul>
+                    </div>
                 </ul>
             </div>
         </div>
@@ -114,7 +121,11 @@
             // Eliminar el producto de la cesta
             $sqlDelete = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
             if ($conexion->query($sqlDelete)) {
-                echo "Producto en la cesta eliminado correctamente";
+                echo '<script>
+            Swal.fire({icon: "success",
+            title: "Eliminado de la cesta",
+            showConfirmButton: false,
+            timer: 1000});</script>';
                 // Actualizar la cantidad del producto en la tabla de productos
                 $sqlUpdate = "UPDATE productos SET cantidad = cantidad + $cantidadEliminada WHERE idProducto = '$productocesta'";
                 $conexion->query($sqlUpdate);
@@ -136,18 +147,22 @@
                     $idPedido = $conexion->insert_id;
 
                     // Insertar líneas de pedido en la tabla lineaspedidos
-                    $sqlInsertLineasPedido = "INSERT INTO lineaspedidos (idProducto, idPedido, precioUnitario, cantidad) 
-                            SELECT productocestas.idProducto, $idPedido, productos.precio, productocestas.cantidad
-                            FROM productocestas 
-                            INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
-                            WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+                    $sqlInsertLineasPedido = "INSERT INTO lineasPedidos (idProducto, idPedido, precioUnitario, cantidad) 
+                        SELECT productocestas.idProducto, '$idPedido', productos.precio, productocestas.cantidad
+                        FROM productocestas 
+                        INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
+                        WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
 
                     if ($conexion->query($sqlInsertLineasPedido)) {
                         // Eliminar todos los productos de la cesta
                         $sqlVaciarCesta = "DELETE FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
                         $conexion->query($sqlVaciarCesta);
 
-                        echo "Pedido realizado correctamente";
+                        echo '<script>
+                        Swal.fire({icon: "success",
+                        title: "Pedido realizado correctamente",
+                        showConfirmButton: false,
+                        timer: 1000});</script>';
                     } else {
                         echo "Error al insertar líneas de pedido: " . $conexion->error;
                     }
@@ -239,16 +254,22 @@
                                                 <img src="<?php echo $nuevo_producto->imagen ?>" alt="Image" class="img-fluid">
                                             </td>
                                             <td class="product-name">
-                                                <h2 class="h5 text-black"><?php
-                                                                            foreach ($productos as $nuevo_producto) {
-                                                                                if ($productocesta->idProducto == $nuevo_producto->idProducto) {
-                                                                                    break;
-                                                                                }
-                                                                            }
-                                                                            echo $nuevo_producto->nombreProducto ?></h2>
+                                                <h2 class="h5 text-black">
+                                                    <?php
+                                                    foreach ($productos as $nuevo_producto) {
+                                                        if ($productocesta->idProducto == $nuevo_producto->idProducto) {
+                                                            break;
+                                                        }
+                                                    }
+                                                    echo $nuevo_producto->nombreProducto ?>
+                                                </h2>
                                             </td>
-                                            <td><?php echo $nuevo_producto->precio . ' €' ?> </td>
-                                            <td><?php echo $productocesta->cantidad ?> </td>
+                                            <td>
+                                                <?php echo $nuevo_producto->precio . ' €' ?>
+                                            </td>
+                                            <td>
+                                                <?php echo $productocesta->cantidad ?>
+                                            </td>
                                             <td>
                                                 <form action="" method="post">
                                                     <input type="hidden" name="productocesta" value="<?php echo $productocesta->idProducto ?>">
@@ -298,7 +319,7 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <form action="" method="post" class="mb-3">
+                                        <form action="" method="post">
                                             <input class="btn btn-success" type="submit" name="buy" value="Enviar">
                                         </form>
                                     </div>
@@ -311,7 +332,9 @@
         </div>
     <?php
     } else {
-        echo "<h3 class='at-item text-center'><b>No hay productos en la cesta</b></h3>";
+        echo '<div class="empty-cart-message text-center py-5">';
+        echo '<h3 class="at-item text-center"><b>No hay productos en la cesta</b></h3>';
+        echo '</div>';
     }
     ?>
 
@@ -321,7 +344,7 @@
         <div class="container relative">
 
             <div class="sofa-img">
-                <img src="../images/sofa.png" alt="Image" class="img-fluid">
+                <img src="https://support.apple.com/library/content/dam/edam/applecare/images/en_US/macbookpro/macbook-pro-14in-m3-nov-2023-silver-space-gray.png" alt="Image" class="img-fluid">
             </div>
 
             <div class="row">
@@ -350,7 +373,9 @@
             <div class="row g-5 mb-5">
                 <div class="col-lg-4">
                     <div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
-                    <p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. Pellentesque habitant</p>
+                    <p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus
+                        malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.
+                        Pellentesque habitant</p>
 
                     <ul class="list-unstyled custom-social">
                         <li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
@@ -403,9 +428,11 @@
             <div class="border-top copyright">
                 <div class="row pt-4">
                     <div class="col-lg-6">
-                        <p class="mb-2 text-center text-lg-start">Copyright &copy;<script>
+                        <p class="mb-2 text-center text-lg-start">Copyright &copy;
+                            <script>
                                 document.write(new Date().getFullYear());
-                            </script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a hreff="https://themewagon.com">ThemeWagon</a> <!-- License information: https://untree.co/license/ -->
+                            </script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a hreff="https://themewagon.com">ThemeWagon</a>
+                            <!-- License information: https://untree.co/license/ -->
                         </p>
                     </div>
 

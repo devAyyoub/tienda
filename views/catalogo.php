@@ -1,10 +1,3 @@
-<!-- /*
-* Bootstrap 5
-* Template Name: Furni
-* Template Author: Untree.co
-* Template URI: https://untree.co/
-* License: https://creativecommons.org/licenses/by/3.0/
-*/ -->
 <!doctype html>
 <html lang="en">
 
@@ -12,7 +5,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author" content="Untree.co">
-	<link rel="shortcut icon" href="favicon.png">
+	<link rel="shortcut icon" href="../images/ordenador-portatil.png">
 
 	<meta name="description" content="" />
 	<meta name="keywords" content="bootstrap, bootstrap4" />
@@ -33,6 +26,11 @@
 	<script defer src="../js/bootstrap.bundle.min.js"></script>
 	<script defer src="../js/tiny-slider.js"></script>
 	<script defer src="../js/custom.js"></script>
+	<script defer src="../js/script.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 </head>
 
 <body>
@@ -55,7 +53,7 @@
 	<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
 		<div class="container">
-			<a class="navbar-brand" href="index.html">Ayyoub's Shop<span>.</span></a>
+			<a class="navbar-brand" href="index.html">TechTribe<span>.</span></a>
 
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
@@ -63,15 +61,15 @@
 
 			<div class="collapse navbar-collapse" id="navbarsFurni">
 				<ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-				<li class="nav-item">
-                        <?php
-                        if ($rol == "admin") {
-                            echo '<li class="nav-item">';
-                            echo '<a class="nav-link" href="listado_productos.php"><Productos</b></a>';
-                            echo '</li>';
-                        }
-                        ?>
-                    </li>
+					<li class="nav-item">
+						<?php
+						if ($rol == "admin") {
+							echo '<li class="nav-item">';
+							echo '<a class="nav-link" href="listado_productos.php"><Productos</b></a>';
+							echo '</li>';
+						}
+						?>
+					</li>
 					<li class="nav-item">
 						<?php
 						if ($rol == "admin") {
@@ -91,18 +89,23 @@
 						?>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><b>Cesta</b></a>
+						<a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><img src="../images/cart.svg" alt=""></a>
 					</li>
-					<li class="nav-item" id="logout">
-						<?php
-						// Enlace para cerrar sesión o iniciar sesión según la condición
-						if (isset($_SESSION['usuario'])) {
-							echo '<a class="nav-link" href="./sesiones/cerrar_sesion.php"><b>Cerrar sesión</b></a>';
-						} else {
-							echo '<a class="nav-link" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a>';
-						}
-						?>
-					</li>
+					<div class="dropdown">
+						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+							<img src="../images/user.svg" alt="">
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+							<?php
+							// Enlace para cerrar sesión o iniciar sesión según la condición
+							if (isset($_SESSION['usuario'])) {
+							?>
+								<li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
+							<?php } else { ?>
+								<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
+							<?php } ?>
+						</ul>
+					</div>
 				</ul>
 			</div>
 		</div>
@@ -125,7 +128,12 @@
 			//inserta la cantidad de producto en la cesta y si se vuelve a añadir el mismo producto se actualiza la cantidad
 			$sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), '$cantidad') ON DUPLICATE KEY UPDATE cantidad = cantidad + '$cantidad'";
 			if ($conexion->query($sql3)) {
-				echo "Producto " . $idProducto . " añadido a la cesta";
+				echo '<script>
+            Swal.fire({icon: "success",
+            title: "Añadido a la cesta",
+            showConfirmButton: false,
+            timer: 1000});</script>';
+				//echo "Producto " . $idProducto . " añadido a la cesta";
 				//actualiza la cantidad de productos
 				$sql4 = "UPDATE productos SET cantidad = cantidad - '$cantidad' WHERE idProducto = '$idProducto'";
 				$conexion->query($sql4);
@@ -215,21 +223,21 @@
 							<h3 class="product-title"><?php echo $producto->nombreProducto; ?></h3>
 							<strong class="product-price"><?php echo $producto->precio . " €"; ?></strong>
 							<form action="" method="POST">
-							<?php 
-                                                if($producto->cantidad == 0){
-                                                    echo "<p>No hay stock</p>";
-                                                }else{
-                                                    ?>
-                                                <select name="cantidad" class="form-control">
-                                                    <?php
-                                                    for ($i = 1; $i <= $producto->cantidad; $i++) {
-                                                        echo "<option value='$i'>$i</option>";
-                                                    }
-                                                    ?>
-                                                </select>
-                                                <?php
-                                                }
-                                                ?>
+								<?php
+								if ($producto->cantidad == 0) {
+									echo "<p>No hay stock</p>";
+								} else {
+								?>
+									<select name="cantidad" class="form-control">
+										<?php
+										for ($i = 1; $i <= $producto->cantidad; $i++) {
+											echo "<option value='$i'>$i</option>";
+										}
+										?>
+									</select>
+								<?php
+								}
+								?>
 								<button type="submit" <?php if ($producto->cantidad == 0) {
 															echo 'disabled';
 														} ?> class="btn btn-success d-inline p-0 border-0">
@@ -254,14 +262,14 @@
 	<footer class="footer-section">
 		<div class="container relative">
 
-		<div class="sofa-img">
-                <img src="../images/sofa.png" alt="Image" class="img-fluid">
-            </div>
+			<div class="sofa-img">
+				<img src="https://support.apple.com/library/content/dam/edam/applecare/images/en_US/macbookpro/macbook-pro-14in-m3-nov-2023-silver-space-gray.png" alt="Image" class="img-fluid">
+			</div>
 
 			<div class="row">
 				<div class="col-lg-8">
 					<div class="subscription-form">
-						<h3 class="d-flex align-items-center"><span class="me-1"><img src="images/envelope-outline.svg" alt="Image" class="../img-fluid"></span><span>Subscribe to Newsletter</span></h3>
+						<h3 class="d-flex align-items-center"><span class="me-1"><img src="../images/envelope-outline.svg" alt="Image" class="../img-fluid"></span><span>Subscribe to Newsletter</span></h3>
 
 						<form action="#" class="row g-3">
 							<div class="col-auto">
