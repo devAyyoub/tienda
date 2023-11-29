@@ -61,7 +61,7 @@
 		$rol = $_SESSION["rol"];
 	}
 
-	
+
 
 	?>
 	<!-- Start Header/Navigation -->
@@ -109,26 +109,28 @@
 							<a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><img src="../images/cart.svg" alt=""></a>
 						</li>
 					<?php } ?>
-					<div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-							<img class="img-fluid" src="../images/user.svg" alt="">
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-							<?php
-							// Enlace para cerrar sesión o iniciar sesión según la condición
-							if ($usuario != "invitado") { 
-							?>
-								<li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
-							<?php } else { ?>
-								<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
-							<?php } ?>
-							<?php
-							if ($usuario != "invitado") { ?>
-								<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
-								<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
-							<?php }  ?>
-						</ul>
-					</div>
+					<li class="nav-item">
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+								<img class="img-fluid" src="../images/user.svg" alt="">
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<?php
+								// Enlace para cerrar sesión o iniciar sesión según la condición
+								if ($usuario != "invitado") {
+								?>
+									<li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
+								<?php } else { ?>
+									<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
+								<?php } ?>
+								<?php
+								if ($usuario != "invitado") { ?>
+									<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
+									<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
+								<?php }  ?>
+							</ul>
+						</div>
+					</li>
 				</ul>
 			</div>
 		</div>

@@ -61,7 +61,7 @@
 
 	?>
 	<!-- Start Header/Navigation -->
-	<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+	<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
 
 		<div class="container">
 			<a class="navbar-brand" href="index.php">TechTribe<span>.</span></a>
@@ -102,23 +102,25 @@
 					<li class="nav-item">
 						<a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><img src="../images/cart.svg" alt=""></a>
 					</li>
-					<div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="../images/user.svg" alt="">
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-							<?php
-							// Enlace para cerrar sesión o iniciar sesión según la condición
-							if (isset($_SESSION['usuario'])) {
-							?>
-								<li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
-							<?php } else { ?>
-								<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
-							<?php } ?>
-							<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
-							<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
-						</ul>
-					</div>
+					<li class="nav-item">
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+								<img src="../images/user.svg" alt="">
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+								<?php
+								// Enlace para cerrar sesión o iniciar sesión según la condición
+								if (isset($_SESSION['usuario'])) {
+								?>
+									<li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
+								<?php } else { ?>
+									<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
+								<?php } ?>
+								<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
+								<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
+							</ul>
+						</div>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -237,23 +239,22 @@
 							<strong class="product-price"><?php echo $producto->precio . " €"; ?></strong>
 							<form action="" method="POST">
 								<div id="container">
-								<?php
-								if ($producto->cantidad == 0) {
-									echo "<h3>No hay stock</h3>";
-								} else {
-								?>
-									<select class="form-control mySelect" name="cantidad">
-										<<?php
-										for ($i = 1; $i <= $producto->cantidad; $i++) {
-											echo "<option value='$i'>$i</option>";
+									<?php
+									if ($producto->cantidad == 0) {
+										echo "<h3>No hay stock</h3>";
+									} else {
+									?>
+										<select class="form-control mySelect" name="cantidad">
+											<<?php
+												for ($i = 1; $i <= $producto->cantidad; $i++) {
+													echo "<option value='$i'>$i</option>";
+												}
+												?> </select>
+											<?php
 										}
-										?>
-									</select>
-								<?php
-								}
-								?>
+											?>
 								</div>
-								
+
 								<button type="submit" <?php if ($producto->cantidad == 0) {
 															echo 'disabled';
 														} ?> class="btn btn-success d-inline p-0 border-0">
