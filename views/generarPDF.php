@@ -8,31 +8,29 @@ if (isset($_GET['idPedido'])) {
     // Realiza una consulta a la base de datos para obtener los detalles del pedido desde la tabla lineasPedidos
     $sql = "SELECT * FROM lineasPedidos WHERE idPedido = '$idPedido'";
     $resultado = $conexion->query($sql);
-    //realiza otra consulta de la tabla pedidos para obtener todo el pedido
+
+    // Realiza otra consulta de la tabla pedidos para obtener todo el pedido
     $sql2 = "SELECT * FROM pedidos WHERE idPedido = '$idPedido'";
     $resultado2 = $conexion->query($sql2);
-    //saca el usuario y el precioTotal de la tabla pedidos
+
+    // Saca el usuario y el precioTotal de la tabla pedidos
     while ($fila = $resultado2->fetch_assoc()) {
         $usuario = $fila["usuario"];
         $precioTotal = $fila["precioTotal"];
     }
-    //saca el nombre del usuario de la tabla usuarios
+
+    // Saca el nombre del usuario de la tabla usuarios
     $sql3 = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
     $resultado3 = $conexion->query($sql3);
     while ($fila = $resultado3->fetch_assoc()) {
         $nombre = $fila["usuario"];
     }
-    //saca la fecha del pedido de la tabla pedidos
+
+    // Saca la fecha del pedido de la tabla pedidos
     $sql4 = "SELECT * FROM pedidos WHERE idPedido = '$idPedido'";
     $resultado4 = $conexion->query($sql4);
     while ($fila = $resultado4->fetch_assoc()) {
         $fechaPedido = $fila["fechaPedido"];
-    }
-    //saca el precioTotal de la tabla pedidos;
-    $sql5 = "SELECT * FROM pedidos WHERE idPedido = '$idPedido'";
-    $resultado5 = $conexion->query($sql5);
-    while ($fila = $resultado5->fetch_assoc()) {
-        $precioTotal = $fila["precioTotal"];
     }
 
     if ($resultado->num_rows > 0) {
@@ -43,36 +41,46 @@ if (isset($_GET['idPedido'])) {
         // Logo de la empresa
         $pdf->Image('../images/Tech.png', 10, 10, 30);
 
+        // Nombre del cliente en la esquina superior derecha
+        $pdf->SetFont('helvetica', 'B', 12);
+        $pdf->SetXY(130, 10);
+        $pdf->Cell(0, 10, 'Cliente: ' . $nombre, 0, 1);
+
         // Detalles del pedido
-        $pdf->Ln(10);
+        $pdf->Ln(20);
+        $pdf->SetFont('helvetica', 'B', 12);
         $pdf->Cell(0, 10, 'Detalles del pedido ' . $idPedido, 0, 1);
         $pdf->Ln(5);
 
-        // Productos
+        // Tabla para mostrar los productos con bordes
         $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->Cell(0, 10, 'Productos', 0, 1);
+        $pdf->Cell(40, 10, 'ID Producto', 1, 0, 'C');
+        $pdf->Cell(40, 10, 'Precio Unitario', 1, 0, 'C');
+        $pdf->Cell(40, 10, 'Cantidad', 1, 1, 'C');
         $pdf->SetFont('helvetica', '', 12);
-        $pdf->Ln(5);
-        $pdf->Cell(0, 10, 'ID Producto - Precio unitario - Cantidad', 0, 1);
-        $pdf->Ln(5);
-
-        // Información del usuario y fecha del pedido
-        $pdf->SetFont('helvetica', 'B', 12);
-        $pdf->Cell(0, 10, 'Usuario: ' . $nombre, 0, 1);
-        $pdf->Cell(0, 10, 'Fecha del pedido: ' . $fechaPedido, 0, 1);
-        $pdf->Ln(5);
-
-        // Precio total
-        $pdf->Cell(0, 10, 'Precio total: $' . number_format($precioTotal, 2), 0, 1);
-        $pdf->Ln(10);
 
         // Detalles de productos
         while ($fila = $resultado->fetch_assoc()) {
             $idProducto = $fila["idProducto"];
             $precioUnitario = $fila["precioUnitario"];
             $cantidad = $fila["cantidad"];
-            $pdf->Cell(0, 10, $idProducto . ' - $' . number_format($precioUnitario, 2) . ' - ' . $cantidad, 0, 1);
+
+            // Agrega fila a la tabla
+            $pdf->Cell(40, 10, $idProducto, 1, 0, 'C');
+            $pdf->Cell(40, 10, '€' . number_format($precioUnitario, 2), 1, 0, 'C');
+            $pdf->Cell(40, 10, $cantidad, 1, 1, 'C');
         }
+
+        // Precio total
+        $pdf->Ln(10);
+        $pdf->SetFont('helvetica', 'B', 12);
+        $pdf->Cell(0, 10, 'Precio total: €' . number_format($precioTotal, 2), 0, 1);
+        $pdf->Ln(10);
+
+        // Fecha del pedido
+        $pdf->SetFont('helvetica', 'B', 12);
+        $pdf->Cell(0, 10, 'Fecha del pedido: ' . $fechaPedido, 0, 1);
+        $pdf->Ln(10);
 
         // Establece la salida del PDF como descarga
         $pdf->Output('detalle_pedido_' . $idPedido . '.pdf', 'D');
@@ -84,3 +92,4 @@ if (isset($_GET['idPedido'])) {
     // Maneja el caso en el que no se proporciona un ID de pedido válido
     echo "ID de pedido no válido";
 }
+?>

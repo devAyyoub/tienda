@@ -160,8 +160,10 @@
                     if ($_FILES["imagen"]["size"] > 1048576) {
                         echo "El archivo es demasiado grande. El tamaño máximo permitido es 1 MB.";
                     } else {
-                        echo $nombre_imagen . " " . $tipo_imagen . " " . $tamano_imagen . " " . $ruta_temporal;
+                        echo $nombre_imagen . " " . $tipo_imagen . " " . $tamano_imagen . " " . $ruta_temporal. "<br>";
                         $ruta_final = "./img/" . $nombre_imagen;
+                        echo $ruta_final . "<br>";
+                        echo $ruta_temporal. "<br>";
                         move_uploaded_file($ruta_temporal, $ruta_final); 
                     }
                 }
@@ -221,7 +223,7 @@
         if (isset($nombre) && isset($precio) && isset($descripcion) && isset($cantidad) && isset($ruta_final)) {
 
 
-            $sql = "INSERT INTO Productos (nombreProducto, precio, descripcion, cantidad, imagen) VALUES ('$nombre', '$precio', '$descripcion', '$cantidad', '$ruta_final')";
+            $sql = "INSERT INTO productos (nombreProducto, precio, descripcion, cantidad, imagen) VALUES ('$nombre', '$precio', '$descripcion', '$cantidad', '$ruta_final')";
 
             if ($conexion->query($sql) === TRUE) {
                 echo "<h1>Éxito!</h1>";

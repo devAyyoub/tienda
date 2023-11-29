@@ -36,7 +36,7 @@ a.more {
 }
 
 .custom-navbar {
-  background: #3b5d50 !important;
+  background: rgb(32, 32, 32) !important;
   padding-top: 20px;
   padding-bottom: 20px;
 }
@@ -121,7 +121,7 @@ a.more {
 }
 
 .hero {
-  background: #3b5d50;
+  background: rgb(32, 32, 32);
   padding: calc(4rem - 30px) 0 0rem 0;
 }
 @media (min-width: 768px) {
@@ -160,14 +160,14 @@ a.more {
 .hero .hero-img-wrap {
   position: relative;
 }
-.hero .hero-img-wrap img {
+/*.hero .hero-img-wrap img {
   position: relative;
   top: 0px;
   right: 0px;
   z-index: 2;
   max-width: 780px;
   left: -20px;
-}
+}*/
 @media (min-width: 768px) {
   .hero .hero-img-wrap img {
     right: 0px;
@@ -189,7 +189,7 @@ a.more {
     right: -100px;
   }
 }
-.hero .hero-img-wrap:after {
+/*.hero .hero-img-wrap:after {
   content: "";
   position: absolute;
   width: 255px;
@@ -199,7 +199,7 @@ a.more {
   background-repeat: no-repeat;
   right: -100px;
   top: -0px;
-}
+}*/
 @media (min-width: 1200px) {
   .hero .hero-img-wrap:after {
     top: -40px;
@@ -226,8 +226,8 @@ a.more {
   box-shadow: none;
 }
 .btn.btn-primary {
-  background: #3b5d50;
-  border-color: #3b5d50;
+  background: rgb(32, 32, 32);
+  border-color: rgb(32, 32, 32);
 }
 .btn.btn-primary:hover {
   background: #314d43;
@@ -398,9 +398,6 @@ a.more {
 .we-help-section .imgs-grid {
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: (1fr) [27];
-  grid-template-columns: repeat(27, 1fr);
-  position: relative;
 }
 .we-help-section .imgs-grid:before {
   position: absolute;
@@ -907,4 +904,9 @@ textarea {
 .alert {
   margin-top: 20px;
   margin-bottom: 200px;
+}
+
+.fotohero{
+  border-radius: 20px;
+  margin-bottom: 20px;
 }
