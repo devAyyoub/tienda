@@ -55,7 +55,7 @@
 	}
 
 	if ($usuario == "invitado") {
-		header("Location: ./sesiones/iniciar_sesion.php");
+		header("Location: index.php");
 		exit(); // Asegura que el script se detenga después de la redirección
 	}
 
@@ -105,19 +105,21 @@
 					<li class="nav-item">
 						<div class="dropdown">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-								<img src="../images/user.svg" alt="">
+								<img class="img-fluid" src="../images/user.svg" alt="">
 							</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
 								<?php
+								if ($usuario != "invitado") { ?>
+									<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
+									<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
+								<?php }  
 								// Enlace para cerrar sesión o iniciar sesión según la condición
-								if (isset($_SESSION['usuario'])) {
+								if ($usuario != "invitado") {
 								?>
 									<li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
 								<?php } else { ?>
 									<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
 								<?php } ?>
-								<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
-								<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
 							</ul>
 						</div>
 					</li>
