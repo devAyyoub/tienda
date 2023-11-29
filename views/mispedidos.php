@@ -102,23 +102,27 @@
 					<li class="nav-item">
 						<a class="nav-link" aria-current="page" href="cesta.php" aria-disabled="true"><img src="../images/cart.svg" alt=""></a>
 					</li>
-					<div class="dropdown">
-						<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-							<img src="../images/user.svg" alt="">
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-							<?php
-							// Enlace para cerrar sesión o iniciar sesión según la condición
-							if (isset($_SESSION['usuario'])) {
-							?>
-								<li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
-							<?php } else { ?>
-								<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
-							<?php } ?>
-							<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
-							<li><a class="dropdown-item" href="#">Mis pedidos</a></li>
-						</ul>
-					</div>
+					<li class="nav-item">
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+								<img class="img-fluid" src="../images/user.svg" alt="">
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
+								<?php
+								if ($usuario != "invitado") { ?>
+									<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
+									<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
+								<?php }  
+								// Enlace para cerrar sesión o iniciar sesión según la condición
+								if ($usuario != "invitado") {
+								?>
+									<li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
+								<?php } else { ?>
+									<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
+								<?php } ?>
+							</ul>
+						</div>
+					</li>
 				</ul>
 			</div>
 		</div>
@@ -147,13 +151,16 @@
 	} else {
 	?>
 		<div class="container">
+			<h1 class="pedidos">Pedidos</h1>
 			<div class="alert alert-success" id="alertpedidos" role="alert">
 				<ul>
 					<?php
 					while ($fila = $resultado->fetch_assoc()) {
 						$fechaPedido = $fila["fechaPedido"];
 						$idPedido = $fila["idPedido"];
-						echo '<li class="lipedidos"><a href="generarPDF.php?idPedido=' . $idPedido . '">' . $fechaPedido . '</a></li>';
+						echo '<li class="lipedidos">
+						<a class="fechapedido" href="generarPDF.php?idPedido=' . $idPedido . '">' . "<p>Pulsa aqui para descargar la factura de la fecha: " . $fechaPedido. "</p> </a>
+						</li>";
 					}
 					?>
 				</ul>
