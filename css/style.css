@@ -24,11 +24,11 @@ a {
   -webkit-transition: 0.3s all ease;
   -o-transition: 0.3s all ease;
   transition: 0.3s all ease;
-  color: #2f2f2f;
-  text-decoration: underline;
+  color: black;
+  text-decoration: none;
 }
 a:hover {
-  color: #2f2f2f;
+  color: rgb(0, 0, 0);
   text-decoration: none;
 }
 a.more {
@@ -904,4 +904,7 @@ textarea {
   margin-bottom: 300px;
 }
 
+.tabla {
+  margin-bottom: 200px;
+}
 

@@ -16,7 +16,7 @@
 </head>
 
 <body>
-	<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+	<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark" arial-label="Furni navigation bar">
 
 		<div class="container">
 			<a class="navbar-brand" href="index.html">TechTribe<span>.</span></a>
@@ -113,7 +113,7 @@
 									<button type="submit" class="form-control btn btn-primary rounded submit px-3">Iniciar sesión</button>
 								</div>
 							</form>
-							<p class="text-center">No eres miembro? <a data-toggle="tab" href="registro.php">Registrate</a></p>
+							<p class="text-center">¿No eres miembro? <a data-toggle="tab" href="registro.php">Regístrate</a></p>
 						</div>
 					</div>
 				</div>

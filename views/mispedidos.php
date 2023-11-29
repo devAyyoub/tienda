@@ -23,12 +23,12 @@
 	<!-- Inclusión de archivos PHP para la conexión a la base de datos y la clase Producto -->
 	<?php require '../util/bd/bd_productos.php' ?>
 	<?php require '../util/objetos/producto.php' ?>
+	<?php require_once('../tcpdf/tcpdf.php'); ?>
 	<script defer src="../js/jquery-3.6.4.min.js"></script>
 	<script defer src="../js/bootstrap.bundle.min.js"></script>
 	<script defer src="../js/tiny-slider.js"></script>
 	<script defer src="../js/custom.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 		$(document).ready(function() {
@@ -116,7 +116,7 @@
 								<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
 							<?php } ?>
 							<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
-							<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
+							<li><a class="dropdown-item" href="#">Mis pedidos</a></li>
 						</ul>
 					</div>
 				</ul>
@@ -125,152 +125,44 @@
 
 	</nav>
 	<!-- End Header/Navigation -->
-
 	<?php
-	// Manejo de formularios POST para añadir productos a la cesta
-	if ($_SERVER["REQUEST_METHOD"] == "POST") {
-		if (isset($_POST["addProduct"])) {
-			$idProducto = $_POST["idProducto"];
-			$cantidad = (int)$_POST["cantidad"];
+	// haz una consulta a la base de datos para ver si existe un pedido de la tabla pedidos con el usuario que ha iniciado sesión
+	// si no existe, muestra un mensaje de que no hay pedidos
+	// si no hay pedidos, muestra un mensaje de que no hay pedidos
+	// si hay pedidos, muestra los productos que ha comprado el usuario
+	// la tabla pedidos tiene  los campos usuario, precioTotal y fechaPedido
+	// si existe, haz una consulta a la tabla lineasPedidos para obtener los productos que ha comprado el usuario, los campos que tiene la tabla son idProducto, idPedido, precioUnitario y cantidad
+	//quiero se vea de la siguiente forma, una lista de enlaces con la fecha de cada pedido, y al pulsar en cada enlace, se muestre el detalle del pedido
 
-			//si el usuario es invitado se le redirige a iniciar sesion
-			if ($usuario == "invitado") {
-				header("Location: ./sesiones/iniciar_sesion.php");
-			}
-
-			//inserta la cantidad de producto en la cesta y si se vuelve a añadir el mismo producto se actualiza la cantidad
-			$sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), '$cantidad') ON DUPLICATE KEY UPDATE cantidad = cantidad + '$cantidad'";
-			if ($conexion->query($sql3)) {
-				echo '<script>
-            Swal.fire({icon: "success",
-            title: "Añadido a la cesta",
-            showConfirmButton: false,
-            timer: 1000});</script>';
-				//echo "Producto " . $idProducto . " añadido a la cesta";
-				//actualiza la cantidad de productos
-				$sql4 = "UPDATE productos SET cantidad = cantidad - '$cantidad' WHERE idProducto = '$idProducto'";
-				$conexion->query($sql4);
-			} else {
-				echo "Error: " . $sql3 . "<br>" . $conexion->error;
-			}
-		}
-		// Manejo de formularios POST para eliminar productos de la cesta y la base de datos
-		if (isset($_POST["deleteProduct"])) {
-			$idProducto = $_POST["idProducto"];
-			$sql4 = "DELETE FROM productocestas WHERE idProducto = '$idProducto'";
-			$conexion->query($sql4);
-
-			$sql3 = "DELETE FROM productos WHERE idProducto = '$idProducto' ";
-
-			$sql = "select imagen from productos where idProducto = '$idProducto'";
-			$resultado = $conexion->query($sql);
-			if (!$resultado) {
-				die("Error al obtener la imagen del producto");
-			}
-			$ruta_img = $resultado->fetch_assoc()["imagen"];
-
-			// Eliminación de la imagen asociada al producto si existe
-			if (file_exists($ruta_img)) {
-				unlink($ruta_img);
-			}
-			//eliminar el producto de la tabla lineaspedidos
-			$sql5 = "DELETE FROM lineaspedidos WHERE idProducto = '$idProducto'";
-			$conexion->query($sql5);
-
-			// Confirmación de la eliminación del producto
-			if ($conexion->query($sql3)) {
-				echo "Producto " . $idProducto . " eliminado de la cesta";
-			} else {
-				echo "Error: " . $sql3 . "<br>" . $conexion->error;
-			}
-		}
-	}
-	?>
-
-	<?php
-	// Consulta a la base de datos para obtener todos los productos
-	$sql = "SELECT * FROM productos";
+	$sql = "SELECT * FROM pedidos WHERE usuario = '$usuario'";
 	$resultado = $conexion->query($sql);
-
-	$productos = [];
-
-	// Creación de objetos Producto a partir de los resultados de la consulta
-	while ($fila = $resultado->fetch_assoc()) {
-		$nuevo_producto = new Producto(
-			$fila["idProducto"],
-			$fila["nombreProducto"],
-			$fila["precio"],
-			$fila["descripcion"],
-			$fila["cantidad"],
-			$fila["imagen"]
-		);
-		array_push($productos, $nuevo_producto);
-	}
+	if ($resultado->num_rows === 0) {
 	?>
-	<!-- Start Hero Section -->
-	<div class="hero">
 		<div class="container">
-			<div class="row justify-content-between">
-				<div class="col-lg-5">
-					<div class="intro-excerpt">
-						<h1>Catálogo</h1>
-					</div>
-				</div>
-				<div class="col-lg-7">
-
-				</div>
+			<div class="alert alert-danger" role="alert">
+				No hay pedidos
 			</div>
 		</div>
-	</div>
-	<!-- End Hero Section -->
-
-
-
-	<div class="untree_co-section product-section before-footer-section">
+	<?php
+	} else {
+	?>
 		<div class="container">
-			<div class="row">
-				<?php foreach ($productos as $producto) : ?>
-					<div class="col-12 col-md-4 col-lg-3 mb-5">
-						<a class="product-item" href="#">
-							<img src="<?php echo $producto->imagen; ?>" class="img-fluid product-thumbnail" height="300" width="250">
-							<h3 class="product-title"><?php echo $producto->nombreProducto; ?></h3>
-							<strong class="product-price"><?php echo $producto->precio . " €"; ?></strong>
-							<form action="" method="POST">
-								<div id="container">
-								<?php
-								if ($producto->cantidad == 0) {
-									echo "<h3>No hay stock</h3>";
-								} else {
-								?>
-									<select class="form-control mySelect" name="cantidad">
-										<<?php
-										for ($i = 1; $i <= $producto->cantidad; $i++) {
-											echo "<option value='$i'>$i</option>";
-										}
-										?>
-									</select>
-								<?php
-								}
-								?>
-								</div>
-								
-								<button type="submit" <?php if ($producto->cantidad == 0) {
-															echo 'disabled';
-														} ?> class="btn btn-success d-inline p-0 border-0">
-									<span class="icon-cross">
-										<img src="../images/cross.svg" class="img-fluid" alt="Añadir">
-									</span>
-								</button>
-								<input type="hidden" name="idProducto" value="<?php echo $producto->idProducto ?>">
-								<input type="hidden" name="addProduct" value="true">
-							</form>
-
-						</a>
-					</div>
-				<?php endforeach; ?>
+			<div class="alert alert-success" role="alert">
+				<ul>
+					<?php
+					while ($fila = $resultado->fetch_assoc()) {
+						$fechaPedido = $fila["fechaPedido"];
+						$idPedido = $fila["idPedido"];
+						echo '<li class="lipedidos"><a href="generarPDF.php?idPedido=' . $idPedido . '">' . $fechaPedido . '</a></li>';
+					}
+					?>
+				</ul>
 			</div>
 		</div>
-	</div>
+	<?php
+	}
+
+	?>
 
 
 

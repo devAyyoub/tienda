@@ -67,8 +67,10 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $usuario = $_POST["usuario"];
 
-        $sql5 = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario')";
-        if ($conexion->query($sql5)) {
+        $sql4 = "DELETE FROM lineasPedidos WHERE idPedido IN (SELECT idPedido FROM pedidos WHERE usuario='$usuario')";
+        $sql3 = "DELETE FROM pedidos WHERE usuario='$usuario'";
+        $sql5 = "DELETE FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+        if ($conexion->query($sql5) && $conexion->query($sql4) && $conexion->query($sql3)) {
             $sql4 = "DELETE FROM cestas WHERE usuario='$usuario'";
             $sql3 = "DELETE FROM usuarios WHERE usuario='$usuario'";
 

@@ -105,6 +105,8 @@
                             <?php } else { ?>
                                 <li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
                             <?php } ?>
+                            <li><a class="dropdown-item" href="#">Mi cuenta</a></li>
+							<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
                         </ul>
                     </div>
                 </ul>
@@ -222,7 +224,7 @@
             <div class="row justify-content-between">
                 <div class="col-lg-5">
                     <div class="intro-excerpt">
-                        <h1>Cart</h1>
+                        <h1>Cesta</h1>
                     </div>
                 </div>
                 <div class="col-lg-7">
@@ -294,7 +296,7 @@
                     <div class="col-md-6">
                         <div class="row mb-5">
                             <div class="col-md-6">
-                                <button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button>
+                            <a href="catalogo.php"><button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button></a>
                             </div>
                         </div>
                     </div>
@@ -306,27 +308,30 @@
                                         <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <span class="text-black">Subtotal</span>
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <strong class="text-black">$230.00</strong>
-                                    </div>
-                                </div>
                                 <div class="row mb-5">
                                     <div class="col-md-6">
                                         <span class="text-black">Total</span>
                                     </div>
                                     <div class="col-md-6 text-right">
-                                        <strong class="text-black">$230.00</strong>
+                                        <?php
+                                        // saca el precio total de la cesta 
+                                        $sql = "SELECT SUM(productos.precio * productocestas.cantidad) AS precioTotal
+
+                                        FROM productocestas
+                                        INNER JOIN productos ON productocestas.idProducto = productos.idProducto
+                                        WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+                                        $resultado = $conexion->query($sql);
+                                        $fila = $resultado->fetch_assoc();
+                                        
+                                        ?>
+                                        <strong class="text-black"><?php echo $fila["precioTotal"] . ' €'; ?></strong>
                                     </div>
                                 </div>
 
                                 <div class="row">
                                     <div class="col-md-12">
                                         <form action="" method="post">
-                                            <input class="btn btn-success" type="submit" name="buy" value="Enviar">
+                                            <input class="btn btn-success" type="submit" name="buy" value="Finalizar compra">
                                         </form>
                                     </div>
                                 </div>
@@ -340,7 +345,10 @@
     } else {
         echo '<div class="empty-cart-message text-center py-5">';
         echo '<h3 class="at-item text-center"><b>No hay productos en la cesta</b></h3>';
-        echo '</div>';
+        ?>
+        <a href="catalogo.php"><button class="btn btn-success">Ver productos</button></a>
+        <?php
+        echo '</div>';                          
     }
     ?>
 
