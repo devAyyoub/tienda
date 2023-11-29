@@ -147,7 +147,7 @@
 	} else {
 	?>
 		<div class="container">
-			<div class="alert alert-success" role="alert">
+			<div class="alert alert-success" id="alertpedidos" role="alert">
 				<ul>
 					<?php
 					while ($fila = $resultado->fetch_assoc()) {

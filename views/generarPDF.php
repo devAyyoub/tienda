@@ -1,6 +1,6 @@
 <?php
 require_once('../tcpdf/tcpdf.php');
- require '../util/bd/bd_productos.php';
+require '../util/bd/bd_productos.php';
 
 if (isset($_GET['idPedido'])) {
     $idPedido = $_GET['idPedido'];
@@ -40,28 +40,38 @@ if (isset($_GET['idPedido'])) {
         $pdf = new TCPDF();
         $pdf->AddPage();
 
-        // Agrega el contenido del PDF con los detalles del pedido
-        $pdf->SetFont('helvetica', '', 12);
-        $pdf->Cell(0, 10, 'Detalles del pedido ' . $idPedido, 0, 1);
+        // Logo de la empresa
+        $pdf->Image('../images/Tech.png', 10, 10, 30);
+
+        // Detalles del pedido
         $pdf->Ln(10);
+        $pdf->Cell(0, 10, 'Detalles del pedido ' . $idPedido, 0, 1);
+        $pdf->Ln(5);
+
+        // Productos
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->Cell(0, 10, 'Productos', 0, 1);
         $pdf->SetFont('helvetica', '', 12);
         $pdf->Ln(5);
         $pdf->Cell(0, 10, 'ID Producto - Precio unitario - Cantidad', 0, 1);
         $pdf->Ln(5);
+
+        // Información del usuario y fecha del pedido
         $pdf->SetFont('helvetica', 'B', 12);
         $pdf->Cell(0, 10, 'Usuario: ' . $nombre, 0, 1);
-        $pdf->Ln(5);
         $pdf->Cell(0, 10, 'Fecha del pedido: ' . $fechaPedido, 0, 1);
         $pdf->Ln(5);
-        $pdf->Cell(0, 10, 'Precio total: ' . $precioTotal, 0, 1);
-        $pdf->Ln(5);
+
+        // Precio total
+        $pdf->Cell(0, 10, 'Precio total: $' . number_format($precioTotal, 2), 0, 1);
+        $pdf->Ln(10);
+
+        // Detalles de productos
         while ($fila = $resultado->fetch_assoc()) {
             $idProducto = $fila["idProducto"];
             $precioUnitario = $fila["precioUnitario"];
             $cantidad = $fila["cantidad"];
-            $pdf->Cell(0, 10, $idProducto . ' - ' . $precioUnitario . ' - ' . $cantidad, 0, 1);
+            $pdf->Cell(0, 10, $idProducto . ' - $' . number_format($precioUnitario, 2) . ' - ' . $cantidad, 0, 1);
         }
 
         // Establece la salida del PDF como descarga
@@ -74,4 +84,3 @@ if (isset($_GET['idPedido'])) {
     // Maneja el caso en el que no se proporciona un ID de pedido válido
     echo "ID de pedido no válido";
 }
-?>
