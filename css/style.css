@@ -930,3 +930,8 @@ textarea {
   font-family: "Inter", sans-serif;
   text-align: center;
 }
+
+.cartaCuenta {
+  margin-bottom: 200px;
+  margin-top: 20px;
+}

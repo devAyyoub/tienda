@@ -100,7 +100,7 @@
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
 								<?php
 								if ($usuario != "invitado") { ?>
-									<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
+									<li><a class="dropdown-item" href="miCuenta.php">Mi cuenta</a></li>
 									<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
 								<?php }  
 								// Enlace para cerrar sesión o iniciar sesión según la condición

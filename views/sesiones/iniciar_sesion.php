@@ -37,53 +37,53 @@
 	</nav>
 
 	<?php
-    function depurar($entrada)
-    {
-        return trim(htmlspecialchars($entrada));
-    }
+	function depurar($entrada)
+	{
+		return trim(htmlspecialchars($entrada));
+	}
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $usuario = $_POST["usuario"];
-        $contrasena = $_POST["contrasena"];
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+		$usuario = $_POST["usuario"];
+		$contrasena = $_POST["contrasena"];
 
-        $sql = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
-        // " 1 OR 1 = 1; DROP TABLE usuarios; -- "
+		$sql = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
+		// " 1 OR 1 = 1; DROP TABLE usuarios; -- "
 
-        $resultado = $conexion->query($sql);
+		$resultado = $conexion->query($sql);
 
-        if ($resultado->num_rows === 0) {
-    ?>
-            <div class="alert alert-danger" role="alert">
-                El usuario no existe
-            </div>
-            <?php
-        } else {
-            while ($fila = $resultado->fetch_assoc()) {
-                $contrasena_cifrada = $fila["contrasena"];
-                $rol = $fila["rol"];
-            }
+		if ($resultado->num_rows === 0) {
+	?>
+			<div class="alert alert-danger" role="alert">
+				El usuario no existe
+			</div>
+			<?php
+		} else {
+			while ($fila = $resultado->fetch_assoc()) {
+				$contrasena_cifrada = $fila["contrasena"];
+				$rol = $fila["rol"];
+			}
 
-            $acceso_valido = password_verify($contrasena, $contrasena_cifrada);
+			$acceso_valido = password_verify($contrasena, $contrasena_cifrada);
 
-            if ($acceso_valido) {
-                echo "Inicio de sesion correcto";
-                session_start();
-                $_SESSION["usuario"] = $usuario;
-                $_SESSION["rol"] = $rol;
-                header('location: ../../views/catalogo.php');
-            } else {
-            ?>
-                <div class="container">
-                    <div class="alert alert-danger" role="alert">
-                        Contraseña incorrecta
-                    </div>
-                </div>
+			if ($acceso_valido) {
+				echo "Inicio de sesion correcto";
+				session_start();
+				$_SESSION["usuario"] = $usuario;
+				$_SESSION["rol"] = $rol;
+				header('location: ../../views/catalogo.php');
+			} else {
+			?>
+				<div class="container">
+					<div class="alert alert-danger" role="alert">
+						Contraseña incorrecta
+					</div>
+				</div>
 
-    <?php
-            }
-        }
-    }
-    ?>
+	<?php
+			}
+		}
+	}
+	?>
 
 	<section class="ftco-section">
 		<div class="container">
@@ -107,7 +107,10 @@
 								</div>
 								<div class="form-group mb-3">
 									<label class="label" for="password">Password</label>
-									<input type="password" class="form-control" name="contrasena" placeholder="Contraseña" required>
+									<div class="input-group">
+										<input type="password" class="form-control" name="contrasena" id="contrasena" placeholder="Contraseña" required>
+										<button type="button" class="btn btn-secondary" onclick="mostrarContrasena('contrasena')"><img src="../../images/invisible.png" alt=""></button>
+									</div>
 								</div>
 								<div class="form-group">
 									<button type="submit" class="form-control btn btn-primary rounded submit px-3">Iniciar sesión</button>
@@ -120,6 +123,18 @@
 			</div>
 		</div>
 	</section>
+	<script>
+		function mostrarContrasena(id) {
+			var campo = document.getElementById(id);
+			if (campo.type === "password") {
+				campo.type = "text";
+				document.getElementsByTagName("img")[0].src = "../../images/ojo.png";
+			} else {
+				campo.type = "password";
+				document.getElementsByTagName("img")[0].src = "../../images/invisible.png";
+			}
+		}
+	</script>
 	<script src="../../js/bootstrap.bundle.min.js"></script>
 	<script src="../../js/tiny-slider.js"></script>
 	<script src="../../js/custom.js"></script>

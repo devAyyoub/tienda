@@ -23,12 +23,12 @@
 	<!-- Inclusión de archivos PHP para la conexión a la base de datos y la clase Producto -->
 	<?php require '../util/bd/bd_productos.php' ?>
 	<?php require '../util/objetos/producto.php' ?>
-	<?php require_once('../tcpdf/tcpdf.php'); ?>
 	<script defer src="../js/jquery-3.6.4.min.js"></script>
 	<script defer src="../js/bootstrap.bundle.min.js"></script>
 	<script defer src="../js/tiny-slider.js"></script>
 	<script defer src="../js/custom.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script>
 		$(document).ready(function() {
@@ -55,13 +55,13 @@
 	}
 
 	if ($usuario == "invitado") {
-		header("Location: ./sesiones/iniciar_sesion.php");
+		header("Location: index.php");
 		exit(); // Asegura que el script se detenga después de la redirección
 	}
 
 	?>
 	<!-- Start Header/Navigation -->
-	<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+	<nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
 
 		<div class="container">
 			<a class="navbar-brand" href="index.php">TechTribe<span>.</span></a>
@@ -113,7 +113,7 @@
 							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
 								<?php
 								if ($usuario != "invitado") { ?>
-									<li><a class="dropdown-item" href="miCuenta.php">Mi cuenta</a></li>
+									<li><a class="dropdown-item" href="">Mi cuenta</a></li>
 									<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
 								<?php }  
 								// Enlace para cerrar sesión o iniciar sesión según la condición
@@ -132,47 +132,27 @@
 
 	</nav>
 	<!-- End Header/Navigation -->
-	<?php
-	// haz una consulta a la base de datos para ver si existe un pedido de la tabla pedidos con el usuario que ha iniciado sesión
-	// si no existe, muestra un mensaje de que no hay pedidos
-	// si no hay pedidos, muestra un mensaje de que no hay pedidos
-	// si hay pedidos, muestra los productos que ha comprado el usuario
-	// la tabla pedidos tiene  los campos usuario, precioTotal y fechaPedido
-	// si existe, haz una consulta a la tabla lineasPedidos para obtener los productos que ha comprado el usuario, los campos que tiene la tabla son idProducto, idPedido, precioUnitario y cantidad
-	//quiero se vea de la siguiente forma, una lista de enlaces con la fecha de cada pedido, y al pulsar en cada enlace, se muestre el detalle del pedido
 
-	$sql = "SELECT * FROM pedidos WHERE usuario = '$usuario'";
-	$resultado = $conexion->query($sql);
-	if ($resultado->num_rows === 0) {
-	?>
-		<div class="container">
-			<div class="alert alert-danger" role="alert">
-				No hay pedidos
-			</div>
-		</div>
-	<?php
-	} else {
-	?>
-		<div class="container">
-			<h1 class="pedidos">Pedidos</h1>
-			<div class="alert alert-success" id="alertpedidos" role="alert">
-				<ul>
-					<?php
-					while ($fila = $resultado->fetch_assoc()) {
-						$fechaPedido = $fila["fechaPedido"];
-						$idPedido = $fila["idPedido"];
-						echo '<li class="lipedidos">
-						<a class="fechapedido" href="generarPDF.php?idPedido=' . $idPedido . '">' . "<p>Pulsa aqui para descargar la factura de la fecha: " . $fechaPedido. "</p> </a>
-						</li>";
-					}
-					?>
-				</ul>
-			</div>
-		</div>
-	<?php
-	}
-
-	?>
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card cartaCuenta">
+                    <div class="card-header">
+                        <h3>Datos del Usuario</h3>
+                    </div>
+                    <div class="card-body">
+                        <?php
+                        // Realizar la consulta a la tabla usuarios
+                        $consulta = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
+                        $resultado = $conexion->query($consulta);
+                        $fila = $resultado->fetch_assoc();
+                        echo "<p><strong>Nombre de usuario: </strong>" . $fila["usuario"] . "</p>";
+                        echo "<p><strong>Fecha de nacimiento: </strong>" . $fila["fechaNacimiento"] . "</p>";
+                        echo "<a href='./sesiones/cambiarContrasena.php' class='btn btn-primary'>Cambiar contraseña</a>"
+                        ?>
+                    </div>
+                </div>
+            </div>
+        </div>
 
 
 
