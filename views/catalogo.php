@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
 
 <head>
 	<meta charset="utf-8">
@@ -152,8 +152,8 @@
             timer: 1000});</script>';
 				//echo "Producto " . $idProducto . " añadido a la cesta";
 				//actualiza la cantidad de productos
-				$sql4 = "UPDATE productos SET cantidad = cantidad - '$cantidad' WHERE idProducto = '$idProducto'";
-				$conexion->query($sql4);
+				//$sql4 = "UPDATE productos SET cantidad = cantidad - '$cantidad' WHERE idProducto = '$idProducto'";
+				//$conexion->query($sql4);
 			} else {
 				echo "Error: " . $sql3 . "<br>" . $conexion->error;
 			}

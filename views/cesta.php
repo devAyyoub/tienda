@@ -44,12 +44,12 @@
     }
 
     if ($usuario == "invitado") {
-		header("Location: index.php");
-		exit(); // Asegura que el script se detenga después de la redirección
-	}
+        header("Location: index.php");
+        exit(); // Asegura que el script se detenga después de la redirección
+    }
     ?>
 
-    
+
     <!-- Start Header/Navigation -->
     <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
 
@@ -93,26 +93,26 @@
                         <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true">Catálogo</a>
                     </li>
                     <li class="nav-item">
-						<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-								<img class="img-fluid" src="../images/user.svg" alt="">
-							</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
-								<?php
-								if ($usuario != "invitado") { ?>
-									<li><a class="dropdown-item" href="miCuenta.php">Mi cuenta</a></li>
-									<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
-								<?php }  
-								// Enlace para cerrar sesión o iniciar sesión según la condición
-								if ($usuario != "invitado") {
-								?>
-									<li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
-								<?php } else { ?>
-									<li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
-								<?php } ?>
-							</ul>
-						</div>
-					</li>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img class="img-fluid" src="../images/user.svg" alt="">
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <?php
+                                if ($usuario != "invitado") { ?>
+                                    <li><a class="dropdown-item" href="miCuenta.php">Mi cuenta</a></li>
+                                    <li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
+                                <?php }
+                                // Enlace para cerrar sesión o iniciar sesión según la condición
+                                if ($usuario != "invitado") {
+                                ?>
+                                    <li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
+                                <?php } else { ?>
+                                    <li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
+                                <?php } ?>
+                            </ul>
+                        </div>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -138,9 +138,6 @@
             title: "Eliminado de la cesta",
             showConfirmButton: false,
             timer: 1000});</script>';
-                // Actualizar la cantidad del producto en la tabla de productos
-                $sqlUpdate = "UPDATE productos SET cantidad = cantidad + $cantidadEliminada WHERE idProducto = '$productocesta'";
-                $conexion->query($sqlUpdate);
             } else {
                 echo "Error al eliminar el producto de la cesta: " . $conexion->error;
             }
@@ -166,15 +163,37 @@
                         WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
 
                     if ($conexion->query($sqlInsertLineasPedido)) {
+                        // Obtener la cantidad comprada de cada producto en la cesta
+                        $sqlCantidad = "SELECT idProducto, cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario')";
+                        $resultadoCantidad = $conexion->query($sqlCantidad);
+
+                        // Iterar sobre los resultados y actualizar la cantidad en la tabla de productos
+                        while ($row = $resultadoCantidad->fetch_assoc()) {
+                            $idProducto = $row['idProducto'];
+                            $cantidadComprada = $row['cantidad'];
+
+                            // Actualizar la cantidad del producto en la tabla de productos
+                            $sqlUpdateProductos = "UPDATE productos SET cantidad = cantidad - $cantidadComprada WHERE idProducto = '$idProducto'";
+                            if (!$conexion->query($sqlUpdateProductos)) {
+                                echo "Error al actualizar la cantidad del producto: " . $conexion->error;
+                            }
+                        }
                         // Eliminar todos los productos de la cesta
                         $sqlVaciarCesta = "DELETE FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
                         $conexion->query($sqlVaciarCesta);
+                        //eliminar la cantidad comprada de la tabla productos del producto comprado
+                        $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario')";
 
                         echo '<script>
-                        Swal.fire({icon: "success",
+                        Swal.fire({
+                        icon: "success",
                         title: "Pedido realizado correctamente",
                         showConfirmButton: false,
-                        timer: 1000});</script>';
+                        timer: 1000
+                        }).then(function() {
+                        window.location.href = "mispedidos.php";
+                        });
+                        </script>';
                     } else {
                         echo "Error al insertar líneas de pedido: " . $conexion->error;
                     }
@@ -300,7 +319,7 @@
                     <div class="col-md-6">
                         <div class="row mb-5">
                             <div class="col-md-6">
-                            <a href="catalogo.php"><button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button></a>
+                                <a href="catalogo.php"><button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button></a>
                             </div>
                         </div>
                     </div>
@@ -326,7 +345,7 @@
                                         WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
                                         $resultado = $conexion->query($sql);
                                         $fila = $resultado->fetch_assoc();
-                                        
+
                                         ?>
                                         <strong class="text-black"><?php echo $fila["precioTotal"] . ' €'; ?></strong>
                                     </div>
@@ -349,10 +368,10 @@
     } else {
         echo '<div class="empty-cart-message text-center py-5">';
         echo '<h3 class="at-item text-center"><b>No hay productos en la cesta</b></h3>';
-        ?>
+    ?>
         <a href="catalogo.php"><button class="btn btn-success">Ver productos</button></a>
-        <?php
-        echo '</div>';                          
+    <?php
+        echo '</div>';
     }
     ?>
 

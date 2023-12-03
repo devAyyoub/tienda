@@ -116,30 +116,42 @@
     if (isset($usuario) && isset($contrasena) && isset($fechaNacimiento)) {
         $consulta = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
         $resultado = mysqli_query($conexion, $consulta);
+    
         if (mysqli_num_rows($resultado) == 0) {
             $consulta = "INSERT INTO usuarios (usuario, contrasena, fechaNacimiento) VALUES ('$usuario', '$contrasena_cifrada', '$fechaNacimiento')";
             $sql_cesta = "INSERT INTO cestas (usuario, precioTotal) VALUES ('$usuario', 0)";
             mysqli_query($conexion, $sql_cesta);
             $resultado = mysqli_query($conexion, $consulta);
+    
             if ($resultado) {
                 echo '<script>
-            Swal.fire({icon: "success",
-            title: "Eliminado de la cesta",
-            showConfirmButton: false,
-            timer: 1000});</script>';
-                header("Location: iniciar_sesion.php");
+                    Swal.fire({
+                        icon: "success",
+                        title: "Usuario registrado correctamente",
+                        showConfirmButton: false,
+                        timer: 1000
+                    }).then(function() {
+                        window.location.href = "iniciar_sesion.php";
+                    });
+                </script>';
             } else {
                 echo "Error al insertar en la base de datos";
             }
         } else {
             $err_usuario = "El usuario ya existe";
             echo '<script>
-            Swal.fire({icon: "error",
-            title: "El usuario ya existe",
-            showConfirmButton: false,
-            timer: 1000});</script>';
+                Swal.fire({
+                    icon: "error",
+                    title: "El usuario ya existe",
+                    showConfirmButton: false,
+                    timer: 1000
+                });
+            </script>';
         }
     }
+    
+    
+    
 
 
 
@@ -172,6 +184,7 @@
                                         <input type="password" class="form-control" name="contrasena" id="contrasena" placeholder="Contraseña" required>
                                         <button type="button" class="btn btn-secondary" onclick="mostrarContrasena('contrasena')"><img src="../../images/invisible.png" alt=""></button>
                                     </div>
+                                    <p>Mínimo un carácter en minúscula, uno en mayúscula, un número y un carácter especial</p>
                                     <?php if (isset($err_contrasena)) echo '<label class="text-danger">' . $err_contrasena . '</label>' ?>
                                 </div>
                                 <div class="form-group mb-3">
