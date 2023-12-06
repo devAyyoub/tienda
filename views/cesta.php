@@ -1,10 +1,3 @@
-<!-- /*
-* Bootstrap 5
-* Template Name: Furni
-* Template Author: Untree.co
-* Template URI: https://untree.co/
-* License: https://creativecommons.org/licenses/by/3.0/
-*/ -->
 <!doctype html>
 <html lang="en">
 
@@ -28,6 +21,16 @@
     <?php require '../util/objetos/productoCesta.php' ?>
     <?php require '../util/objetos/producto.php' ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmacion(){
+            var respuesta = confirm("¿Estás seguro de que quieres eliminar el producto de la cesta?");
+            if(respuesta == true){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    </script>
 </head>
 
 <body>
@@ -304,7 +307,7 @@
                                             <td>
                                                 <form action="" method="post">
                                                     <input type="hidden" name="productocesta" value="<?php echo $productocesta->idProducto ?>">
-                                                    <input class="btn btn-danger" type="submit" name="delete" value="X">
+                                                    <input class="btn btn-danger" type="submit" name="delete" value="X" onclick="return confirmacion()">
                                                 </form>
                                             </td>
                                         </tr>
