@@ -23,7 +23,7 @@
 	<!-- Inclusión de archivos PHP para la conexión a la base de datos y la clase Producto -->
 	<?php require '../util/bd/bd_productos.php' ?>
 	<?php require '../util/objetos/producto.php' ?>
-	<?php require_once('../tcpdf/tcpdf.php'); ?>
+	<?php require_once('../TCPDF/tcpdf.php'); ?>
 	<script defer src="../js/jquery-3.6.4.min.js"></script>
 	<script defer src="../js/bootstrap.bundle.min.js"></script>
 	<script defer src="../js/tiny-slider.js"></script>
@@ -156,17 +156,15 @@
 		<div class="container">
 			<h1 class="pedidos">Pedidos</h1>
 			<div class="alert alert-success" id="alertpedidos" role="alert">
-				<ul>
 					<?php
 					while ($fila = $resultado->fetch_assoc()) {
 						$fechaPedido = $fila["fechaPedido"];
 						$idPedido = $fila["idPedido"];
-						echo '<li class="lipedidos">
+						echo '
 						<a class="fechapedido" href="generarPDF.php?idPedido=' . $idPedido . '">' . "<p>Pulsa aqui para descargar la factura de la fecha: " . $fechaPedido. "</p> </a>
-						</li>";
+						";
 					}
 					?>
-				</ul>
 			</div>
 		</div>
 	<?php
