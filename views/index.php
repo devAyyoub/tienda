@@ -110,19 +110,19 @@
 						</li>
 					<?php } ?>
 					<li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true">Catálogo</a>
-                    </li>
+						<a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true">Catálogo</a>
+					</li>
 					<li class="nav-item">
 						<div class="dropdown">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
 								<img class="img-fluid" src="../images/user.svg" alt="">
 							</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">	
+							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 								<?php
 								if ($usuario != "invitado") { ?>
 									<li><a class="dropdown-item" href="#">Mi cuenta</a></li>
 									<li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
-								<?php }  
+								<?php }
 								// Enlace para cerrar sesión o iniciar sesión según la condición
 								if ($usuario != "invitado") {
 								?>
@@ -146,14 +146,14 @@
 			<div class="row justify-content-between">
 				<div class="col-lg-5">
 					<div class="intro-excerpt">
-						<h1>Modern Interior <span clsas="d-block">Design Studio</span></h1>
-						<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
-						<p><a href="" class="btn btn-secondary me-2">Shop Now</a><a href="#" class="btn btn-white-outline">Explore</a></p>
+						<h1>¡Conecta con la Tecnología!</h1>
+						<p>Descubre lo último en productos electrónicos. Explora y encuentra la innovación que buscas.</p>
+						<p><a href="#" class="btn btn-secondary me-2">Ver Ahora</a><a href="#" class="btn btn-white-outline">Explorar</a></p>
 					</div>
 				</div>
 				<div class="col-lg-7">
 					<div class="hero-img-wrap">
-						<img src="https://cdn.mos.cms.futurecdn.net/GfinEMFXnT42BFxAcDc2rA-1200-80.jpg" class="img-fluid fotohero">
+						<img src="https://cdn.mos.cms.futurecdn.net/GfinEMFXnT42BFxAcDc2rA-1200-80.jpg" class="img-fluid fotohero" alt="Productos Electrónicos">
 					</div>
 				</div>
 			</div>
@@ -168,53 +168,58 @@
 
 				<!-- Start Column 1 -->
 				<div class="col-md-12 col-lg-3 mb-5 mb-lg-0">
-					<h2 class="mb-4 section-title">Crafted with excellent material.</h2>
-					<p class="mb-4">Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique. </p>
-					<p><a href="shop.html" class="btn">Explore</a></p>
+					<h2 class="mb-4 section-title"><b>Innovación en Cada Detalle</b></h2>
+					<p class="mb-4">Descubre la excelencia en cada producto. Materiales de primera calidad para una experiencia única.</p>
+					<p><a href="shop.html" class="btn btn-primary">Explorar</a></p>
 				</div>
 				<!-- End Column 1 -->
 
+				<?php
+				// Consulta a la base de datos para obtener todos los productos
+				$sql = "SELECT * FROM productos";
+				$resultado = $conexion->query($sql);
+
+				$productos = [];
+
+				// Creación de objetos Producto a partir de los resultados de la consulta
+				while ($fila = $resultado->fetch_assoc()) {
+					$nuevo_producto = new Producto(
+						$fila["idProducto"],
+						$fila["nombreProducto"],
+						$fila["precio"],
+						$fila["descripcion"],
+						$fila["cantidad"],
+						$fila["imagen"],
+						$fila["categoria"]
+
+					);
+					array_push($productos, $nuevo_producto);
+				}
+				?>
+
 				<!-- Start Column 2 -->
-				<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-					<a class="product-item" href="cart.html">
-						<img src="../images/product-1.png" class="img-fluid product-thumbnail">
-						<h3 class="product-title">Nordic Chair</h3>
-						<strong class="product-price">$50.00</strong>
+				<?php
+				// Bucle para mostrar los productos
+				foreach ($productos as $producto) {
+					//solo saca los productos de la catergoria movil
+					if ($producto->categoria == "movil") {
+				?>
+						<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+							<a class="product-item" href="cart.html">
+								<img src="<?php echo $producto->imagen; ?>" width="80%" class="img-fluid product-thumbnail">
+								<h3 class="product-title"><?php echo $producto -> nombreProducto; ?></h3>
+								<strong class="product-price"><?php echo $producto -> precio; ?> €</strong>
 
-						<span class="icon-cross">
-							<img src="../images/cross.svg" class="img-fluid">
-						</span>
-					</a>
-				</div>
+								<span class="icon-cross">
+									<img src="../images/cross.svg" class="img-fluid">
+								</span>
+							</a>
+						</div>
+				<?php
+					}
+				}
+				?>
 				<!-- End Column 2 -->
-
-				<!-- Start Column 3 -->
-				<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-					<a class="product-item" href="cart.html">
-						<img src="../images/product-2.png" class="img-fluid product-thumbnail">
-						<h3 class="product-title">Kruzo Aero Chair</h3>
-						<strong class="product-price">$78.00</strong>
-
-						<span class="icon-cross">
-							<img src="../images/cross.svg" class="img-fluid">
-						</span>
-					</a>
-				</div>
-				<!-- End Column 3 -->
-
-				<!-- Start Column 4 -->
-				<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-					<a class="product-item" href="cart.html">
-						<img src="../images/product-3.png" class="img-fluid product-thumbnail">
-						<h3 class="product-title">Ergonomic Chair</h3>
-						<strong class="product-price">$43.00</strong>
-
-						<span class="icon-cross">
-							<img src="../images/cross.svg" class="img-fluid">
-						</span>
-					</a>
-				</div>
-				<!-- End Column 4 -->
 
 			</div>
 		</div>
@@ -222,67 +227,66 @@
 	<!-- End Product Section -->
 
 	<!-- Start Why Choose Us Section -->
-	<div class="why-choose-section">
-		<div class="container">
-			<div class="row justify-content-between">
-				<div class="col-lg-6">
-					<h2 class="section-title">Why Choose Us</h2>
-					<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.</p>
+<div class="why-choose-section">
+	<div class="container">
+		<div class="row justify-content-between">
+			<div class="col-lg-6">
+				<h2 class="section-title">Razones para Elegirnos</h2>
+				<p>Descubre por qué somos tu mejor opción para productos electrónicos de calidad.</p>
 
-					<div class="row my-5">
-						<div class="col-6 col-md-6">
-							<div class="feature">
-								<div class="icon">
-									<img src="../images/truck.svg" alt="Image" class="imf-fluid">
-								</div>
-								<h3>Fast &amp; Free Shipping</h3>
-								<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+				<div class="row my-5">
+					<div class="col-md-6">
+						<div class="feature">
+							<div class="icon">
+								<img src="../images/truck.svg" alt="Fast & Free Shipping" class="img-fluid">
 							</div>
+							<h3>Envío Rápido y Gratuito</h3>
+							<p>Entrega rápida y sin costos adicionales. Porque tu tiempo es valioso.</p>
 						</div>
+					</div>
 
-						<div class="col-6 col-md-6">
-							<div class="feature">
-								<div class="icon">
-									<img src="../images/bag.svg" alt="Image" class="imf-fluid">
-								</div>
-								<h3>Easy to Shop</h3>
-								<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+					<div class="col-md-6">
+						<div class="feature">
+							<div class="icon">
+								<img src="../images/bag.svg" alt="Easy to Shop" class="img-fluid">
 							</div>
+							<h3>Compra Fácil</h3>
+							<p>Explora nuestra tienda de manera sencilla y encuentra lo que necesitas.</p>
 						</div>
+					</div>
 
-						<div class="col-6 col-md-6">
-							<div class="feature">
-								<div class="icon">
-									<img src="../images/support.svg" alt="Image" class="imf-fluid">
-								</div>
-								<h3>24/7 Support</h3>
-								<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+					<div class="col-md-6">
+						<div class="feature">
+							<div class="icon">
+								<img src="../images/support.svg" alt="24/7 Support" class="img-fluid">
 							</div>
+							<h3>Soporte 24/7</h3>
+							<p>Estamos aquí para ayudarte en cualquier momento. Tu satisfacción es nuestra prioridad.</p>
 						</div>
+					</div>
 
-						<div class="col-6 col-md-6">
-							<div class="feature">
-								<div class="icon">
-									<img src="../images/return.svg" alt="Image" class="imf-fluid">
-								</div>
-								<h3>Hassle Free Returns</h3>
-								<p>Donec vitae odio quis nisl dapibus malesuada. Nullam ac aliquet velit. Aliquam vulputate.</p>
+					<div class="col-md-6">
+						<div class="feature">
+							<div class="icon">
+								<img src="../images/return.svg" alt="Hassle Free Returns" class="img-fluid">
 							</div>
+							<h3>Devoluciones Sin Problemas</h3>
+							<p>Proceso de devolución simple y sin complicaciones. Queremos que estés completamente satisfecho.</p>
 						</div>
-
 					</div>
 				</div>
+			</div>
 
-				<div class="col-lg-5">
-					<div class="img-wrap">
-						<img src="../images/why-choose-us-img.jpg" alt="Image" class="img-fluid">
-					</div>
+			<div class="col-lg-5">
+				<div class="img-wrap">
+					<img src="../images/why-choose-us-img.jpg" alt="Image" class="img-fluid">
 				</div>
-
 			</div>
 		</div>
 	</div>
-	<!-- End Why Choose Us Section -->
+</div>
+<!-- End Why Choose Us Section -->
+
 
 	<!-- Start We Help Section -->
 	<div class="we-help-section">
