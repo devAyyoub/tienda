@@ -162,7 +162,8 @@
             $fila["precio"],
             $fila["descripcion"],
             $fila["cantidad"],
-            $fila["imagen"]
+            $fila["imagen"],
+            $fila["categoria"]
         );
         array_push($productos, $nuevo_producto);
     }
