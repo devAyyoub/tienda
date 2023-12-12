@@ -625,7 +625,7 @@ a.more {
 }
 
 .before-footer-section {
-  padding: 7rem 0 12rem 0 !important;
+  padding: 2rem 0 12rem 0 !important;
 }
 
 .blog-section {
@@ -934,4 +934,8 @@ textarea {
 .cartaCuenta {
   margin-bottom: 200px;
   margin-top: 20px;
+}
+
+#direccion {
+  margin-bottom: 200px;
 }

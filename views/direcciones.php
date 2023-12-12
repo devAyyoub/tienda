@@ -21,16 +21,6 @@
     <?php require '../util/objetos/productoCesta.php' ?>
     <?php require '../util/objetos/producto.php' ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        function confirmacion(){
-            var respuesta = confirm("¿Estás seguro de que quieres eliminar el producto de la cesta?");
-            if(respuesta == true){
-                return true;
-            }else{
-                return false;
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -125,28 +115,16 @@
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (isset($_POST["delete"])) {
-            $productocesta = $_POST["productocesta"];
-
-            // Obtener la cantidad del producto en la cesta
-            $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
-            $resultadoCantidad = $conexion->query($sqlCantidad);
-            $cantidadEliminada = $resultadoCantidad->fetch_assoc()["cantidad"];
-
-            // Eliminar el producto de la cesta
-            $sqlDelete = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
-            if ($conexion->query($sqlDelete)) {
-                echo '<script>
-            Swal.fire({icon: "success",
-            title: "Eliminado de la cesta",
-            showConfirmButton: false,
-            timer: 1000});</script>';
-            } else {
-                echo "Error al eliminar el producto de la cesta: " . $conexion->error;
-            }
-        }
-        if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            if (isset($_POST["buy"])) {
+        if (isset($_POST["buy"])) {
+            try {
+                $calle = $_POST["calle"];
+                $ciudad = $_POST["ciudad"];
+                $provincia = $_POST["provincia"];
+                $codigo_postal = $_POST["codigo_postal"];
+                $pais = $_POST["pais"];
+                
+                $sqlInsertarDireccion = "INSERT INTO direcciones (nombre_usuario, calle, ciudad, provincia, codigo_postal, pais) VALUES ('$usuario', '$calle', '$ciudad', '$provincia', '$codigo_postal', '$pais')";
+                $conexion->query($sqlInsertarDireccion);
                 // Insertar un nuevo pedido
                 $sqlInsertPedido = "INSERT INTO pedidos (usuario, precioTotal, fechaPedido) 
                                     SELECT '$usuario', SUM(productos.precio * productocestas.cantidad), NOW()
@@ -160,10 +138,10 @@
 
                     // Insertar líneas de pedido en la tabla lineaspedidos
                     $sqlInsertLineasPedido = "INSERT INTO lineasPedidos (idProducto, idPedido, precioUnitario, cantidad) 
-                        SELECT productocestas.idProducto, '$idPedido', productos.precio, productocestas.cantidad
-                        FROM productocestas 
-                        INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
-                        WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+                                SELECT productocestas.idProducto, '$idPedido', productos.precio, productocestas.cantidad
+                                FROM productocestas 
+                                INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
+                                WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
 
                     if ($conexion->query($sqlInsertLineasPedido)) {
                         // Obtener la cantidad comprada de cada producto en la cesta
@@ -188,196 +166,69 @@
                         $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario')";
 
                         echo '<script>
-                        Swal.fire({
-                        icon: "success",
-                        title: "Pedido realizado correctamente",
-                        showConfirmButton: false,
-                        timer: 1000
-                        }).then(function() {
-                        window.location.href = "mispedidos.php";
-                        });
-                        </script>';
+                                Swal.fire({
+                                icon: "success",
+                                title: "Pedido realizado correctamente",
+                                showConfirmButton: false,
+                                timer: 1000
+                                }).then(function() {
+                                window.location.href = "mispedidos.php";
+                                });
+                                </script>';
                     } else {
                         echo "Error al insertar líneas de pedido: " . $conexion->error;
                     }
                 } else {
                     echo "Error al realizar el pedido: " . $conexion->error;
                 }
+            } catch (Exception $e) {
+                echo "Error al realizar el pedido: " . $e->getMessage();
             }
         }
     }
     ?>
 
-    <?php
-    //productoscestas
-    $sql = "SELECT * FROM productocestas where idCesta = (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
-    $resultado = $conexion->query($sql);
-
-    $productoscesta = [];
-
-    while ($fila = $resultado->fetch_assoc()) {
-        $nuevo_productocesta = new Productocesta(
-            $fila["idProducto"],
-            $fila["idCesta"],
-            $fila["cantidad"],
-        );
-        array_push($productoscesta, $nuevo_productocesta);
-    }
-
-    //productos
-    $sql2 = "SELECT * FROM productos";
-    $resultado = $conexion->query($sql2);
-
-    $productos = [];
-
-    // Creación de objetos Producto a partir de los resultados de la consulta
-    while ($fila = $resultado->fetch_assoc()) {
-        $nuevo_producto = new Producto(
-            $fila["idProducto"],
-            $fila["nombreProducto"],
-            $fila["precio"],
-            $fila["descripcion"],
-            $fila["cantidad"],
-            $fila["imagen"],
-            $fila["categoria"]
-        );
-        array_push($productos, $nuevo_producto);
-    }
-    ?>
-
-    <!-- Start Hero Section -->
-    <div class="hero">
-        <div class="container">
-            <div class="row justify-content-between">
-                <div class="col-lg-5">
-                    <div class="intro-excerpt">
-                        <h1>Cesta</h1>
+<div class="untree_co-section before-footer-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="mb-4 text-center">Ingrese su dirección:</h3>
+                        <form method="post" action="">
+                            <div class="mb-3">
+                                <label for="calle" class="form-label">Calle:</label>
+                                <input type="text" class="form-control" name="calle" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="ciudad" class="form-label">Ciudad:</label>
+                                <input type="text" class="form-control" name="ciudad" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="provincia" class="form-label">Provincia: </label>
+                                <input type="text" class="form-control" name="provincia" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="codigo_postal" class="form-label">Código Postal:</label>
+                                <input type="text" class="form-control" name="codigo_postal" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="pais" class="form-label">País:</label>
+                                <input type="text" class="form-control" name="pais" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <button class="btn btn-success" type="submit" name="buy">Finalizar compra</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                </div>
-                <div class="col-lg-7">
-
                 </div>
             </div>
         </div>
     </div>
-    <!-- End Hero Section -->
+</div>
 
-
-    <?php
-    // Verifica si hay productos para mostrar y agrega el encabezado de la tabla si es necesario
-    if (!empty($productoscesta)) { ?>
-        <div class="untree_co-section before-footer-section">
-            <div class="container">
-                <div class="row mb-5">
-                    <form class="col-md-12" method="post">
-                        <div class="site-blocks-table">
-
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th class="product-thumbnail">Imagen</th>
-                                        <th class="product-name">Producto</th>
-                                        <th class="product-price">Precio</th>
-                                        <th class="product-quantity">Cantidad</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    foreach ($productoscesta as $productocesta) { ?>
-                                        <tr>
-                                            <td class="product-thumbnail">
-                                                <img src="<?php echo $nuevo_producto->imagen ?>" alt="Image" class="img-fluid">
-                                            </td>
-                                            <td class="product-name">
-                                                <h2 class="h5 text-black">
-                                                    <?php
-                                                    foreach ($productos as $nuevo_producto) {
-                                                        if ($productocesta->idProducto == $nuevo_producto->idProducto) {
-                                                            break;
-                                                        }
-                                                    }
-                                                    echo $nuevo_producto->nombreProducto ?>
-                                                </h2>
-                                            </td>
-                                            <td>
-                                                <?php echo $nuevo_producto->precio . ' €' ?>
-                                            </td>
-                                            <td>
-                                                <?php echo $productocesta->cantidad ?>
-                                            </td>
-                                            <td>
-                                                <form action="" method="post">
-                                                    <input type="hidden" name="productocesta" value="<?php echo $productocesta->idProducto ?>">
-                                                    <input class="btn btn-danger" type="submit" name="delete" value="X" onclick="return confirmacion()">
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    <?php } ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </form>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row mb-5">
-                            <div class="col-md-6">
-                                <a href="catalogo.php"><button class="btn btn-outline-black btn-sm btn-block">Continue Shopping</button></a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6 pl-5">
-                        <div class="row justify-content-end">
-                            <div class="col-md-7">
-                                <div class="row">
-                                    <div class="col-md-12 text-right border-bottom mb-5">
-                                        <h3 class="text-black h4 text-uppercase">Cart Totals</h3>
-                                    </div>
-                                </div>
-                                <div class="row mb-5">
-                                    <div class="col-md-6">
-                                        <span class="text-black">Total</span>
-                                    </div>
-                                    <div class="col-md-6 text-right">
-                                        <?php
-                                        // saca el precio total de la cesta 
-                                        $sql = "SELECT SUM(productos.precio * productocestas.cantidad) AS precioTotal
-
-                                        FROM productocestas
-                                        INNER JOIN productos ON productocestas.idProducto = productos.idProducto
-                                        WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
-                                        $resultado = $conexion->query($sql);
-                                        $fila = $resultado->fetch_assoc();
-
-                                        ?>
-                                        <strong class="text-black"><?php echo $fila["precioTotal"] . ' €'; ?></strong>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <form action="" method="post">
-                                            <a class="btn btn-success" href="direcciones.php">Finalizar compra</a>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    <?php
-    } else {
-        echo '<div class="empty-cart-message text-center py-5">';
-        echo '<h3 class="at-item text-center"><b>No hay productos en la cesta</b></h3>';
-    ?>
-        <a href="catalogo.php"><button class="btn btn-success">Ver productos</button></a>
-    <?php
-        echo '</div>';
-    }
-    ?>
 
 
     <!-- Start Footer Section -->
