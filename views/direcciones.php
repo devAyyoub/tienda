@@ -122,31 +122,45 @@
                 $provincia = $_POST["provincia"];
                 $codigo_postal = $_POST["codigo_postal"];
                 $pais = $_POST["pais"];
-                
-                $sqlInsertarDireccion = "INSERT INTO direcciones (nombre_usuario, calle, ciudad, provincia, codigo_postal, pais) VALUES ('$usuario', '$calle', '$ciudad', '$provincia', '$codigo_postal', '$pais')";
-                $conexion->query($sqlInsertarDireccion);
+
+                $sqlInsertarDireccion = "INSERT INTO direcciones (nombre_usuario, calle, ciudad, provincia, codigo_postal, pais) VALUES (?, ?, ?, ?, ?, ?)";
+                $stmtInsertarDireccion = $conexion->prepare($sqlInsertarDireccion);
+                $stmtInsertarDireccion->bind_param("ssssss", $usuario, $calle, $ciudad, $provincia, $codigo_postal, $pais);
+
                 // Insertar un nuevo pedido
+
                 $sqlInsertPedido = "INSERT INTO pedidos (usuario, precioTotal, fechaPedido) 
-                                    SELECT '$usuario', SUM(productos.precio * productocestas.cantidad), NOW()
+                                    SELECT ?, SUM(productos.precio * productocestas.cantidad), NOW()
                                     FROM productocestas 
                                     INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
-                                    WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+                                    WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?)";
+                $sqlInsertPedido = $conexion->prepare($sqlInsertPedido);
+                $sqlInsertPedido->bind_param("ss", $usuario, $usuario);
 
-                if ($conexion->query($sqlInsertPedido)) {
+
+                if ($stmtInsertarDireccion->execute() && $sqlInsertPedido->execute()) {
                     // Obtener el ID autogenerado del pedido
                     $idPedido = $conexion->insert_id;
 
                     // Insertar líneas de pedido en la tabla lineaspedidos
                     $sqlInsertLineasPedido = "INSERT INTO lineasPedidos (idProducto, idPedido, precioUnitario, cantidad) 
-                                SELECT productocestas.idProducto, '$idPedido', productos.precio, productocestas.cantidad
-                                FROM productocestas 
-                                INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
-                                WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+                            SELECT productocestas.idProducto, ?, productos.precio, productocestas.cantidad
+                            FROM productocestas 
+                            INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
+                            WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?)";
 
-                    if ($conexion->query($sqlInsertLineasPedido)) {
+                    $stmtInsertLineasPedido = $conexion->prepare($sqlInsertLineasPedido);
+                    $stmtInsertLineasPedido->bind_param("is", $idPedido, $usuario);
+
+                    if ($stmtInsertLineasPedido->execute()) {
                         // Obtener la cantidad comprada de cada producto en la cesta
-                        $sqlCantidad = "SELECT idProducto, cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario')";
-                        $resultadoCantidad = $conexion->query($sqlCantidad);
+                        $sqlCantidad = "SELECT idProducto, cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario=?)";
+
+                        $stmtCantidad = $conexion->prepare($sqlCantidad);
+                        $stmtCantidad->bind_param("s", $usuario);
+                        $stmtCantidad->execute();
+                        $resultadoCantidad = $stmtCantidad->get_result();
+                        $stmtCantidad->close();
 
                         // Iterar sobre los resultados y actualizar la cantidad en la tabla de productos
                         while ($row = $resultadoCantidad->fetch_assoc()) {
@@ -154,17 +168,31 @@
                             $cantidadComprada = $row['cantidad'];
 
                             // Actualizar la cantidad del producto en la tabla de productos
-                            $sqlUpdateProductos = "UPDATE productos SET cantidad = cantidad - $cantidadComprada WHERE idProducto = '$idProducto'";
-                            if (!$conexion->query($sqlUpdateProductos)) {
-                                echo "Error al actualizar la cantidad del producto: " . $conexion->error;
-                            }
-                        }
-                        // Eliminar todos los productos de la cesta
-                        $sqlVaciarCesta = "DELETE FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
-                        $conexion->query($sqlVaciarCesta);
-                        //eliminar la cantidad comprada de la tabla productos del producto comprado
-                        $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario')";
+                            $sqlUpdateProductos = "UPDATE productos SET cantidad = cantidad - ? WHERE idProducto = ?";
 
+                            $stmtUpdateProductos = $conexion->prepare($sqlUpdateProductos);
+                            $stmtUpdateProductos->bind_param("ii", $cantidadComprada, $idProducto);
+
+                            if (!$stmtUpdateProductos->execute()) {
+                                echo "Error al actualizar la cantidad del producto: " . $stmtUpdateProductos->error;
+                            }
+
+                            $stmtUpdateProductos->close();
+                        }
+
+                        // Eliminar todos los productos de la cesta
+                        $sqlVaciarCesta = "DELETE FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario= ?)";
+                        $stmtVaciarCesta = $conexion->prepare($sqlVaciarCesta);
+                        $stmtVaciarCesta->bind_param("s", $usuario);
+                        $stmtVaciarCesta->execute();
+                        $stmtVaciarCesta->close();
+                        //eliminar la cantidad comprada de la tabla productos del producto comprado
+                        $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario= ?)";
+                        $stmtCantidad = $conexion->prepare($sqlCantidad);
+                        $stmtCantidad->bind_param("s", $usuario);
+                        $stmtCantidad->execute();
+                        $resultadoCantidad = $stmtCantidad->get_result();
+                        $stmtCantidad->close();
                         echo '<script>
                                 Swal.fire({
                                 icon: "success",
@@ -188,46 +216,46 @@
     }
     ?>
 
-<div class="untree_co-section before-footer-section">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-body">
-                        <h3 class="mb-4 text-center">Ingrese su dirección:</h3>
-                        <form method="post" action="">
-                            <div class="mb-3">
-                                <label for="calle" class="form-label">Calle:</label>
-                                <input type="text" class="form-control" name="calle" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="ciudad" class="form-label">Ciudad:</label>
-                                <input type="text" class="form-control" name="ciudad" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="provincia" class="form-label">Provincia: </label>
-                                <input type="text" class="form-control" name="provincia" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="codigo_postal" class="form-label">Código Postal:</label>
-                                <input type="text" class="form-control" name="codigo_postal" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="pais" class="form-label">País:</label>
-                                <input type="text" class="form-control" name="pais" required>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <button class="btn btn-success" type="submit" name="buy">Finalizar compra</button>
+    <div class="untree_co-section before-footer-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-4 text-center">Ingrese su dirección:</h3>
+                            <form method="post" action="">
+                                <div class="mb-3">
+                                    <label for="calle" class="form-label">Calle:</label>
+                                    <input type="text" class="form-control" name="calle" required>
                                 </div>
-                            </div>
-                        </form>
+                                <div class="mb-3">
+                                    <label for="ciudad" class="form-label">Ciudad:</label>
+                                    <input type="text" class="form-control" name="ciudad" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="provincia" class="form-label">Provincia: </label>
+                                    <input type="text" class="form-control" name="provincia" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="codigo_postal" class="form-label">Código Postal:</label>
+                                    <input type="text" class="form-control" name="codigo_postal" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="pais" class="form-label">País:</label>
+                                    <input type="text" class="form-control" name="pais" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button class="btn btn-success" type="submit" name="buy">Finalizar compra</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
 
 

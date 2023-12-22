@@ -127,83 +127,107 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["delete"])) {
             $productocesta = $_POST["productocesta"];
-
+        
             // Obtener la cantidad del producto en la cesta
-            $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
-            $resultadoCantidad = $conexion->query($sqlCantidad);
+            $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario=?) AND idProducto=?";
+            $stmtCantidad = $conexion->prepare($sqlCantidad);
+            $stmtCantidad->bind_param("ss", $usuario, $productocesta);
+            $stmtCantidad->execute();
+            $resultadoCantidad = $stmtCantidad->get_result();
             $cantidadEliminada = $resultadoCantidad->fetch_assoc()["cantidad"];
-
+        
             // Eliminar el producto de la cesta
-            $sqlDelete = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario') AND idProducto='$productocesta'";
-            if ($conexion->query($sqlDelete)) {
+            $sqlDelete = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario=?) AND idProducto=?";
+            $stmtDelete = $conexion->prepare($sqlDelete);
+            $stmtDelete->bind_param("ss", $usuario, $productocesta);
+        
+            if ($stmtDelete->execute()) {
                 echo '<script>
-            Swal.fire({icon: "success",
-            title: "Eliminado de la cesta",
-            showConfirmButton: false,
-            timer: 1000});</script>';
+                    Swal.fire({
+                        icon: "success",
+                        title: "Eliminado de la cesta",
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
+                </script>';
             } else {
-                echo "Error al eliminar el producto de la cesta: " . $conexion->error;
+                echo "Error al eliminar el producto de la cesta: " . $stmtDelete->error;
             }
-        }
+        
+            $stmtCantidad->close();
+            $stmtDelete->close();
+        }        
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST["buy"])) {
                 // Insertar un nuevo pedido
                 $sqlInsertPedido = "INSERT INTO pedidos (usuario, precioTotal, fechaPedido) 
-                                    SELECT '$usuario', SUM(productos.precio * productocestas.cantidad), NOW()
+                                    SELECT ?, SUM(productos.precio * productocestas.cantidad), NOW()
                                     FROM productocestas 
                                     INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
-                                    WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
-
-                if ($conexion->query($sqlInsertPedido)) {
+                                    WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?)";
+            
+                $stmtInsertPedido = $conexion->prepare($sqlInsertPedido);
+                $stmtInsertPedido->bind_param("ss", $usuario, $usuario);
+            
+                if ($stmtInsertPedido->execute()) {
                     // Obtener el ID autogenerado del pedido
                     $idPedido = $conexion->insert_id;
-
+            
                     // Insertar líneas de pedido en la tabla lineaspedidos
                     $sqlInsertLineasPedido = "INSERT INTO lineasPedidos (idProducto, idPedido, precioUnitario, cantidad) 
-                        SELECT productocestas.idProducto, '$idPedido', productos.precio, productocestas.cantidad
+                        SELECT productocestas.idProducto, ?, productos.precio, productocestas.cantidad
                         FROM productocestas 
                         INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
-                        WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
-
-                    if ($conexion->query($sqlInsertLineasPedido)) {
-                        // Obtener la cantidad comprada de cada producto en la cesta
-                        $sqlCantidad = "SELECT idProducto, cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario')";
-                        $resultadoCantidad = $conexion->query($sqlCantidad);
-
-                        // Iterar sobre los resultados y actualizar la cantidad en la tabla de productos
-                        while ($row = $resultadoCantidad->fetch_assoc()) {
-                            $idProducto = $row['idProducto'];
-                            $cantidadComprada = $row['cantidad'];
-
-                            // Actualizar la cantidad del producto en la tabla de productos
-                            $sqlUpdateProductos = "UPDATE productos SET cantidad = cantidad - $cantidadComprada WHERE idProducto = '$idProducto'";
-                            if (!$conexion->query($sqlUpdateProductos)) {
-                                echo "Error al actualizar la cantidad del producto: " . $conexion->error;
+                        WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?)";
+            
+                    $stmtInsertLineasPedido = $conexion->prepare($sqlInsertLineasPedido);
+                    $stmtInsertLineasPedido->bind_param("iss", $idPedido, $usuario);
+            
+                    if ($stmtInsertLineasPedido->execute()) {
+                        // Actualizar la cantidad en la tabla de productos
+                        $sqlUpdateProductos = "UPDATE productos 
+                                               SET cantidad = cantidad - productocestas.cantidad
+                                               WHERE idProducto = (SELECT idProducto FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?) LIMIT 1)";
+            
+                        $stmtUpdateProductos = $conexion->prepare($sqlUpdateProductos);
+                        $stmtUpdateProductos->bind_param("s", $usuario);
+            
+                        if ($stmtUpdateProductos->execute()) {
+                            // Eliminar todos los productos de la cesta
+                            $sqlVaciarCesta = "DELETE FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?)";
+                            $stmtVaciarCesta = $conexion->prepare($sqlVaciarCesta);
+                            $stmtVaciarCesta->bind_param("s", $usuario);
+            
+                            if ($stmtVaciarCesta->execute()) {
+                                echo '<script>
+                                    Swal.fire({
+                                        icon: "success",
+                                        title: "Pedido realizado correctamente",
+                                        showConfirmButton: false,
+                                        timer: 1000
+                                    }).then(function() {
+                                        window.location.href = "mispedidos.php";
+                                    });
+                                </script>';
+                            } else {
+                                echo "Error al vaciar la cesta: " . $stmtVaciarCesta->error;
                             }
+                        } else {
+                            echo "Error al actualizar la cantidad del producto: " . $stmtUpdateProductos->error;
                         }
-                        // Eliminar todos los productos de la cesta
-                        $sqlVaciarCesta = "DELETE FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
-                        $conexion->query($sqlVaciarCesta);
-                        //eliminar la cantidad comprada de la tabla productos del producto comprado
-                        $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario='$usuario')";
-
-                        echo '<script>
-                        Swal.fire({
-                        icon: "success",
-                        title: "Pedido realizado correctamente",
-                        showConfirmButton: false,
-                        timer: 1000
-                        }).then(function() {
-                        window.location.href = "mispedidos.php";
-                        });
-                        </script>';
+            
+                        $stmtUpdateProductos->close();
                     } else {
-                        echo "Error al insertar líneas de pedido: " . $conexion->error;
+                        echo "Error al insertar líneas de pedido: " . $stmtInsertLineasPedido->error;
                     }
+            
+                    $stmtInsertLineasPedido->close();
                 } else {
-                    echo "Error al realizar el pedido: " . $conexion->error;
+                    echo "Error al realizar el pedido: " . $stmtInsertPedido->error;
                 }
-            }
+            
+                $stmtInsertPedido->close();
+            }            
         }
     }
     ?>

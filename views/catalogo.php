@@ -136,27 +136,28 @@
 		if (isset($_POST["addProduct"])) {
 			$idProducto = $_POST["idProducto"];
 			$cantidad = (int)$_POST["cantidad"];
-
-			//si el usuario es invitado se le redirige a iniciar sesion
+	
+			// Si el usuario es invitado, redirige a iniciar sesión
 			if ($usuario == "invitado") {
 				header("Location: ./sesiones/iniciar_sesion.php");
+				exit(); // Asegura que el script se detenga después de la redirección
 			}
-
-			//inserta la cantidad de producto en la cesta y si se vuelve a añadir el mismo producto se actualiza la cantidad
-			$sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES ('$idProducto', (SELECT idCesta FROM cestas WHERE usuario = '$usuario'), '$cantidad') ON DUPLICATE KEY UPDATE cantidad = cantidad + '$cantidad'";
-			if ($conexion->query($sql3)) {
+	
+			// Utiliza sentencia preparada para evitar inyecciones SQL
+			$sql3 = "INSERT INTO productocestas (idProducto, idCesta, cantidad) VALUES (?, (SELECT idCesta FROM cestas WHERE usuario = ?), ?) ON DUPLICATE KEY UPDATE cantidad = cantidad + ?";
+			$stmt = $conexion->prepare($sql3);
+			$stmt->bind_param("isii", $idProducto, $usuario, $cantidad, $cantidad);
+	
+			if ($stmt->execute()) {
 				echo '<script>
-            Swal.fire({icon: "success",
-            title: "Añadido a la cesta",
-            showConfirmButton: false,
-            timer: 1000});</script>';
-				//echo "Producto " . $idProducto . " añadido a la cesta";
-				//actualiza la cantidad de productos
-				//$sql4 = "UPDATE productos SET cantidad = cantidad - '$cantidad' WHERE idProducto = '$idProducto'";
-				//$conexion->query($sql4);
+				Swal.fire({icon: "success",
+				title: "Añadido a la cesta",
+				showConfirmButton: false,
+				timer: 1000});</script>';
 			} else {
-				echo "Error: " . $sql3 . "<br>" . $conexion->error;
+				echo "Error: " . $stmt->error;
 			}
+			$stmt->close();
 		}
 		// Manejo de formularios POST para eliminar productos de la cesta y la base de datos
 		if (isset($_POST["deleteProduct"])) {
@@ -237,7 +238,7 @@
 				<?php foreach ($productos as $producto) : ?>
 					<div class="col-12 col-md-4 col-lg-3 mb-5">
 						<a class="product-item" href="#">
-							<img src="<?php echo $producto->imagen; ?>" class="img-fluid product-thumbnail" height="300" width="250">
+							<img src="<?php echo $producto->imagen; ?>" class="img-fluid product-thumbnail" >
 							<h3 class="product-title"><?php echo $producto->nombreProducto; ?></h3>
 							<strong class="product-price"><?php echo $producto->precio . " €"; ?></strong>
 							<form action="" method="POST">

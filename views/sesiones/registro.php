@@ -111,19 +111,32 @@
         }
     }
 
-    //modifica este codigo para que, si ya existe el usuario, no se registre
-
     if (isset($usuario) && isset($contrasena) && isset($fechaNacimiento)) {
-        $consulta = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
-        $resultado = mysqli_query($conexion, $consulta);
-    
-        if (mysqli_num_rows($resultado) == 0) {
-            $consulta = "INSERT INTO usuarios (usuario, contrasena, fechaNacimiento) VALUES ('$usuario', '$contrasena_cifrada', '$fechaNacimiento')";
-            $sql_cesta = "INSERT INTO cestas (usuario, precioTotal) VALUES ('$usuario', 0)";
-            mysqli_query($conexion, $sql_cesta);
-            $resultado = mysqli_query($conexion, $consulta);
-    
-            if ($resultado) {
+        // Verificar si el usuario ya existe
+        $consulta_verificar = "SELECT * FROM usuarios WHERE usuario = ?";
+        $stmt_verificar = mysqli_prepare($conexion, $consulta_verificar);
+        mysqli_stmt_bind_param($stmt_verificar, "s", $usuario);
+        mysqli_stmt_execute($stmt_verificar);
+        mysqli_stmt_store_result($stmt_verificar);
+
+        if (mysqli_stmt_num_rows($stmt_verificar) == 0) {
+            // El usuario no existe, proceder con la inserción
+            $contrasena_cifrada = password_hash($contrasena, PASSWORD_DEFAULT);
+
+            // Insertar en la tabla usuarios
+            $consulta_insertar_usuario = "INSERT INTO usuarios (usuario, contrasena, fechaNacimiento) VALUES (?, ?, ?)";
+            $stmt_insertar_usuario = mysqli_prepare($conexion, $consulta_insertar_usuario);
+            mysqli_stmt_bind_param($stmt_insertar_usuario, "sss", $usuario, $contrasena_cifrada, $fechaNacimiento);
+            $resultado_insertar_usuario = mysqli_stmt_execute($stmt_insertar_usuario);
+
+            // Insertar en la tabla cestas
+            $consulta_insertar_cesta = "INSERT INTO cestas (usuario, precioTotal) VALUES (?, 0)";
+            $stmt_insertar_cesta = mysqli_prepare($conexion, $consulta_insertar_cesta);
+            mysqli_stmt_bind_param($stmt_insertar_cesta, "s", $usuario);
+            mysqli_stmt_execute($stmt_insertar_cesta);
+
+            // Verificar resultados
+            if ($resultado_insertar_usuario) {
                 echo '<script>
                     Swal.fire({
                         icon: "success",
@@ -137,7 +150,12 @@
             } else {
                 echo "Error al insertar en la base de datos";
             }
+
+            // Cerrar las consultas preparadas
+            mysqli_stmt_close($stmt_insertar_usuario);
+            mysqli_stmt_close($stmt_insertar_cesta);
         } else {
+            // El usuario ya existe
             $err_usuario = "El usuario ya existe";
             echo '<script>
                 Swal.fire({
@@ -148,15 +166,11 @@
                 });
             </script>';
         }
+
+        // Cerrar la consulta preparada de verificación
+        mysqli_stmt_close($stmt_verificar);
     }
-    
-    
-    
-
-
-
     ?>
-
     <section class="ftco-section">
         <div class="container">
             <div class="row justify-content-center">

@@ -43,13 +43,18 @@
 	}
 
 	if ($_SERVER["REQUEST_METHOD"] == "POST") {
-		$usuario = $_POST["usuario"];
-		$contrasena = $_POST["contrasena"];
+		$usuario = depurar($_POST["usuario"]);
+		$contrasena = depurar($_POST["contrasena"]);
 
-		$sql = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
-		// " 1 OR 1 = 1; DROP TABLE usuarios; -- "
+		// Crear una consulta preparada
+		$stmt = $conexion->prepare("SELECT * FROM usuarios WHERE usuario = ?");
+		$stmt->bind_param("s", $usuario);
 
-		$resultado = $conexion->query($sql);
+		// Ejecutar la consulta preparada
+		$stmt->execute();
+
+		// Obtener resultados de la consulta
+		$resultado = $stmt->get_result();
 
 		if ($resultado->num_rows === 0) {
 	?>
@@ -58,15 +63,17 @@
 			</div>
 			<?php
 		} else {
+			// Obtener datos del usuario
 			while ($fila = $resultado->fetch_assoc()) {
 				$contrasena_cifrada = $fila["contrasena"];
 				$rol = $fila["rol"];
 			}
 
+			// Verificar la contraseña
 			$acceso_valido = password_verify($contrasena, $contrasena_cifrada);
 
 			if ($acceso_valido) {
-				echo "Inicio de sesion correcto";
+				echo "Inicio de sesión correcto";
 				session_start();
 				$_SESSION["usuario"] = $usuario;
 				$_SESSION["rol"] = $rol;
@@ -78,12 +85,15 @@
 						Contraseña incorrecta
 					</div>
 				</div>
-
 	<?php
 			}
 		}
+
+		// Cerrar la consulta preparada
+		$stmt->close();
 	}
 	?>
+
 
 	<section class="ftco-section">
 		<div class="container">

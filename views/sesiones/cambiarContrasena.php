@@ -177,8 +177,11 @@
                     timer: 1000});</script>';
                 } else {
                     // Verificar la contraseña actual del usuario desde la base de datos
-                    $query_verificar_contrasena = "SELECT contrasena FROM usuarios WHERE usuario = '$usuario'";
-                    $resultado_verificar = $conexion->query($query_verificar_contrasena);
+                    $query_verificar_contrasena = "SELECT contrasena FROM usuarios WHERE usuario = ?";
+                    $stmt_verificar_contrasena = $conexion->prepare($query_verificar_contrasena);
+                    $stmt_verificar_contrasena->bind_param("s", $usuario);
+                    $stmt_verificar_contrasena->execute();
+                    $resultado_verificar = $stmt_verificar_contrasena->get_result();
 
                     if ($resultado_verificar->num_rows > 0) {
                         $fila = $resultado_verificar->fetch_assoc();
@@ -189,8 +192,11 @@
                             // La contraseña actual es válida, actualizar la contraseña
                             $contrasenaNuevaCifrada = password_hash($contrasenaNueva, PASSWORD_DEFAULT);
 
-                            $query_actualizar_contrasena = "UPDATE usuarios SET contrasena = '$contrasenaNuevaCifrada' WHERE usuario = '$usuario'";
-                            if ($conexion->query($query_actualizar_contrasena)) {
+                            $query_actualizar_contrasena = "UPDATE usuarios SET contrasena = ? WHERE usuario = ?";
+                            $stmt_actualizar_contrasena = $conexion->prepare($query_actualizar_contrasena);
+                            $stmt_actualizar_contrasena->bind_param("ss", $contrasenaNuevaCifrada, $usuario);
+
+                            if ($stmt_actualizar_contrasena->execute()) {
                                 echo '<script>
                                 Swal.fire({icon: "success",
                                 title: "Contraseña actualizada correctamente",
@@ -202,15 +208,19 @@
                         } else {
                             // La contraseña actual no es válida
                             echo '<script>
-                            Swal.fire({icon: "error",
-                            title: "La contraseña actual es incorrecta",
-                            showConfirmButton: false,
-                            timer: 1000});</script>';
+                                Swal.fire({icon: "error",
+                                title: "La contraseña actual es incorrecta",
+                                showConfirmButton: false,
+                                timer: 1000});</script>';
                         }
                     } else {
                         // No se encontró el usuario en la base de datos
                         echo '<script>alert("Error al verificar la contraseña. Por favor, inténtalo de nuevo.");</script>';
                     }
+
+                    // Cerrar las declaraciones preparadas
+                    $stmt_verificar_contrasena->close();
+                    $stmt_actualizar_contrasena->close();
                 }
             }
         }
