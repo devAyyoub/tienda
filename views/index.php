@@ -206,9 +206,9 @@
 				?>
 						<div class="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
 							<a class="product-item" href="cart.html">
-								<img src="<?php echo $producto->imagen; ?>" width="80%" class="img-fluid product-thumbnail">
-								<h3 class="product-title"><?php echo $producto -> nombreProducto; ?></h3>
-								<strong class="product-price"><?php echo $producto -> precio; ?> €</strong>
+								<img src="<?php echo $producto->imagen; ?>" class="img-fluid product-thumbnail">
+								<h3 class="product-title"><?php echo $producto->nombreProducto; ?></h3>
+								<strong class="product-price"><?php echo $producto->precio; ?> €</strong>
 
 								<span class="icon-cross">
 									<img src="../images/cross.svg" class="img-fluid">
@@ -227,65 +227,65 @@
 	<!-- End Product Section -->
 
 	<!-- Start Why Choose Us Section -->
-<div class="why-choose-section">
-	<div class="container">
-		<div class="row justify-content-between">
-			<div class="col-lg-6">
-				<h2 class="section-title">Razones para Elegirnos</h2>
-				<p>Descubre por qué somos tu mejor opción para productos electrónicos de calidad.</p>
+	<div class="why-choose-section">
+		<div class="container">
+			<div class="row justify-content-between">
+				<div class="col-lg-6">
+					<h2 class="section-title">Razones para Elegirnos</h2>
+					<p>Descubre por qué somos tu mejor opción para productos electrónicos de calidad.</p>
 
-				<div class="row my-5">
-					<div class="col-md-6">
-						<div class="feature">
-							<div class="icon">
-								<img src="../images/truck.svg" alt="Fast & Free Shipping" class="img-fluid">
+					<div class="row my-5">
+						<div class="col-md-6">
+							<div class="feature">
+								<div class="icon">
+									<img src="../images/truck.svg" alt="Fast & Free Shipping" class="img-fluid">
+								</div>
+								<h3>Envío Rápido y Gratuito</h3>
+								<p>Entrega rápida y sin costos adicionales. Porque tu tiempo es valioso.</p>
 							</div>
-							<h3>Envío Rápido y Gratuito</h3>
-							<p>Entrega rápida y sin costos adicionales. Porque tu tiempo es valioso.</p>
 						</div>
-					</div>
 
-					<div class="col-md-6">
-						<div class="feature">
-							<div class="icon">
-								<img src="../images/bag.svg" alt="Easy to Shop" class="img-fluid">
+						<div class="col-md-6">
+							<div class="feature">
+								<div class="icon">
+									<img src="../images/bag.svg" alt="Easy to Shop" class="img-fluid">
+								</div>
+								<h3>Compra Fácil</h3>
+								<p>Explora nuestra tienda de manera sencilla y encuentra lo que necesitas.</p>
 							</div>
-							<h3>Compra Fácil</h3>
-							<p>Explora nuestra tienda de manera sencilla y encuentra lo que necesitas.</p>
 						</div>
-					</div>
 
-					<div class="col-md-6">
-						<div class="feature">
-							<div class="icon">
-								<img src="../images/support.svg" alt="24/7 Support" class="img-fluid">
+						<div class="col-md-6">
+							<div class="feature">
+								<div class="icon">
+									<img src="../images/support.svg" alt="24/7 Support" class="img-fluid">
+								</div>
+								<h3>Soporte 24/7</h3>
+								<p>Estamos aquí para ayudarte en cualquier momento. Tu satisfacción es nuestra prioridad.</p>
 							</div>
-							<h3>Soporte 24/7</h3>
-							<p>Estamos aquí para ayudarte en cualquier momento. Tu satisfacción es nuestra prioridad.</p>
 						</div>
-					</div>
 
-					<div class="col-md-6">
-						<div class="feature">
-							<div class="icon">
-								<img src="../images/return.svg" alt="Hassle Free Returns" class="img-fluid">
+						<div class="col-md-6">
+							<div class="feature">
+								<div class="icon">
+									<img src="../images/return.svg" alt="Hassle Free Returns" class="img-fluid">
+								</div>
+								<h3>Devoluciones Sin Problemas</h3>
+								<p>Proceso de devolución simple y sin complicaciones. Queremos que estés completamente satisfecho.</p>
 							</div>
-							<h3>Devoluciones Sin Problemas</h3>
-							<p>Proceso de devolución simple y sin complicaciones. Queremos que estés completamente satisfecho.</p>
 						</div>
 					</div>
 				</div>
-			</div>
 
-			<div class="col-lg-5">
-				<div class="img-wrap">
-					<img src="../images/why-choose-us-img.jpg" alt="Image" class="img-fluid">
+				<div class="col-lg-5">
+					<div class="img-wrap">
+						<img src="../images/why-choose-us-img.jpg" alt="Image" class="img-fluid">
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-</div>
-<!-- End Why Choose Us Section -->
+	<!-- End Why Choose Us Section -->
 
 
 	<!-- Start We Help Section -->
@@ -519,59 +519,119 @@
 	<!-- End Blog Section -->
 
 	<!-- Start Footer Section -->
-	<footer class="footer-section">
-		<div class="container relative">
+    <footer class="footer-section">
+        <div class="container relative">
 
-			<div class="sofa-img">
-				<img src="https://support.apple.com/library/content/dam/edam/applecare/images/en_US/macbookpro/macbook-pro-14in-m3-nov-2023-silver-space-gray.png" alt="Image" class="img-fluid">
-			</div>
+            <div class="sofa-img">
+                <!-- Puedes cambiar la URL de la imagen con el logo de TechTribe -->
+                <img src="https://support.apple.com/library/content/dam/edam/applecare/images/en_US/macbookpro/macbook-pro-14in-m3-nov-2023-silver-space-gray.png" alt="TechTribe Logo" class="img-fluid">
+            </div>
 
-			<div class="row">
-				<div class="col-lg-8">
-					<div class="subscription-form">
-						<h3 class="d-flex align-items-center"><span class="me-1"><img src="../images/envelope-outline.svg" alt="Image" class="../img-fluid"></span><span>Subscribe to Newsletter</span></h3>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="subscription-form">
+                        <h3 class="d-flex align-items-center">
+                            <span class="me-1"><img src="../images/envelope-outline.svg" alt="Image" class="../img-fluid"></span>
+                            <span>Suscríbete al Boletín</span>
+                        </h3>
 
-						<form action="#" class="row g-3">
-							<div class="col-auto">
-								<input type="text" class="form-control" placeholder="Enter your name">
-							</div>
-							<div class="col-auto">
-								<input type="email" class="form-control" placeholder="Enter your email">
-							</div>
-							<div class="col-auto">
-								<button class="btn btn-primary">
-									<span class="fa fa-paper-plane"></span>
-								</button>
-							</div>
-						</form>
+                        <form action="#" class="row g-3">
+                            <div class="col-auto">
+                                <input type="text" class="form-control" placeholder="Ingresa tu nombre">
+                            </div>
+                            <div class="col-auto">
+                                <input type="email" class="form-control" placeholder="Ingresa tu correo electrónico">
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary">
+                                    <span class="fa fa-paper-plane"></span>
+                                </button>
+                            </div>
+                        </form>
 
-					</div>
-				</div>
-			</div>
+                    </div>
+                </div>
+            </div>
 
-			<div class="border-top copyright">
-				<div class="row pt-4">
-					<div class="col-lg-6">
-						<p class="mb-2 text-center text-lg-start">Copyright &copy;<script>
-								document.write(new Date().getFullYear());
-							</script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a href="https://themewagon.com">ThemeWagon</a> <!-- License information: https://untree.co/license/ -->
-						</p>
-					</div>
+            <div class="row g-5 mb-5">
+                <div class="col-lg-4">
+                    <div class="mb-4 footer-logo-wrap">
+                        <!-- Puedes cambiar el texto del enlace y el span con el nombre de la tienda -->
+                        <a href="#" class="footer-logo">TechTribe<span>.</span></a>
+                    </div>
+                    <p class="mb-4">Tu destino para productos electrónicos de última generación. Descubre lo último en tecnología móvil e informática.</p>
 
-					<div class="col-lg-6 text-center text-lg-end">
-						<ul class="list-unstyled d-inline-flex ms-auto">
-							<li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
-							<li><a href="#">Privacy Policy</a></li>
-						</ul>
-					</div>
+                    <ul class="list-unstyled custom-social">
+                        <li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
+                        <li><a href="#"><span class="fa fa-brands fa-twitter"></span></a></li>
+                        <li><a href="#"><span class="fa fa-brands fa-instagram"></span></a></li>
+                        <li><a href="#"><span class="fa fa-brands fa-linkedin"></span></a></li>
+                    </ul>
+                </div>
 
-				</div>
-			</div>
+                <div class="col-lg-8">
+                    <div class="row links-wrap">
+                        <!-- Puedes cambiar los enlaces y nombres según las secciones de tu tienda -->
+                        <div class="col-6 col-sm-6 col-md-3">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Acerca de nosotros</a></li>
+                                <li><a href="#">Productos</a></li>
+                                <li><a href="#">Blog</a></li>
+                                <li><a href="#">Contáctanos</a></li>
+                            </ul>
+                        </div>
 
-		</div>
+                        <div class="col-6 col-sm-6 col-md-3">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Soporte</a></li>
+                                <li><a href="#">Base de conocimientos</a></li>
+                                <li><a href="#">Chat en vivo</a></li>
+                            </ul>
+                        </div>
 
-	</footer>
-	<!-- End Footer Section -->
+                        <div class="col-6 col-sm-6 col-md-3">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Trabajos</a></li>
+                                <li><a href="#">Nuestro equipo</a></li>
+                                <li><a href="#">Privacidad</a></li>
+                                <li><a href="#">Términos y condiciones</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="col-6 col-sm-6 col-md-3">
+                            <ul class="list-unstyled">
+                                <li><a href="#">Móviles</a></li>
+                                <li><a href="#">Portátiles</a></li>
+                                <li><a href="#">Accesorios</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="border-top copyright">
+                <div class="row pt-4">
+                    <div class="col-lg-6">
+                        <p class="mb-2 text-center text-lg-start">©<script>
+                                document.write(new Date().getFullYear());
+                            </script> TechTribe. Todos los derechos reservados. &mdash; <!-- Información de la licencia: https://untree.co/license/ -->
+                        </p>
+                    </div>
+
+                    <div class="col-lg-6 text-center text-lg-end">
+                        <ul class="list-unstyled d-inline-flex ms-auto">
+                            <li class="me-4"><a href="#">Términos y condiciones</a></li>
+                            <li><a href="#">Política de privacidad</a></li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </footer>
+    <!-- End Footer Section -->
 
 
 	<script src="js/bootstrap.bundle.min.js"></script>

@@ -22,11 +22,11 @@
     <?php require '../util/objetos/producto.php' ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        function confirmacion(){
+        function confirmacion() {
             var respuesta = confirm("¿Estás seguro de que quieres eliminar el producto de la cesta?");
-            if(respuesta == true){
+            if (respuesta == true) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         }
@@ -93,7 +93,10 @@
                         ?>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true">Catálogo</a>
+						<a class="nav-link" aria-current="page" href="categorias.php" aria-disabled="true">Categorías</a>
+					</li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true">Todos los productos</a>
                     </li>
                     <li class="nav-item">
                         <div class="dropdown">
@@ -119,7 +122,6 @@
                 </ul>
             </div>
         </div>
-
     </nav>
     <!-- End Header/Navigation -->
 
@@ -127,7 +129,7 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["delete"])) {
             $productocesta = $_POST["productocesta"];
-        
+
             // Obtener la cantidad del producto en la cesta
             $sqlCantidad = "SELECT cantidad FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario=?) AND idProducto=?";
             $stmtCantidad = $conexion->prepare($sqlCantidad);
@@ -135,12 +137,12 @@
             $stmtCantidad->execute();
             $resultadoCantidad = $stmtCantidad->get_result();
             $cantidadEliminada = $resultadoCantidad->fetch_assoc()["cantidad"];
-        
+
             // Eliminar el producto de la cesta
             $sqlDelete = "DELETE FROM productocestas WHERE IdCesta IN (SELECT IdCesta FROM cestas WHERE usuario=?) AND idProducto=?";
             $stmtDelete = $conexion->prepare($sqlDelete);
             $stmtDelete->bind_param("ss", $usuario, $productocesta);
-        
+
             if ($stmtDelete->execute()) {
                 echo '<script>
                     Swal.fire({
@@ -153,10 +155,10 @@
             } else {
                 echo "Error al eliminar el producto de la cesta: " . $stmtDelete->error;
             }
-        
+
             $stmtCantidad->close();
             $stmtDelete->close();
-        }        
+        }
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST["buy"])) {
                 // Insertar un nuevo pedido
@@ -165,39 +167,39 @@
                                     FROM productocestas 
                                     INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
                                     WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?)";
-            
+
                 $stmtInsertPedido = $conexion->prepare($sqlInsertPedido);
                 $stmtInsertPedido->bind_param("ss", $usuario, $usuario);
-            
+
                 if ($stmtInsertPedido->execute()) {
                     // Obtener el ID autogenerado del pedido
                     $idPedido = $conexion->insert_id;
-            
+
                     // Insertar líneas de pedido en la tabla lineaspedidos
                     $sqlInsertLineasPedido = "INSERT INTO lineasPedidos (idProducto, idPedido, precioUnitario, cantidad) 
                         SELECT productocestas.idProducto, ?, productos.precio, productocestas.cantidad
                         FROM productocestas 
                         INNER JOIN productos ON productocestas.idProducto = productos.idProducto 
                         WHERE productocestas.idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?)";
-            
+
                     $stmtInsertLineasPedido = $conexion->prepare($sqlInsertLineasPedido);
                     $stmtInsertLineasPedido->bind_param("iss", $idPedido, $usuario);
-            
+
                     if ($stmtInsertLineasPedido->execute()) {
                         // Actualizar la cantidad en la tabla de productos
                         $sqlUpdateProductos = "UPDATE productos 
                                                SET cantidad = cantidad - productocestas.cantidad
                                                WHERE idProducto = (SELECT idProducto FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?) LIMIT 1)";
-            
+
                         $stmtUpdateProductos = $conexion->prepare($sqlUpdateProductos);
                         $stmtUpdateProductos->bind_param("s", $usuario);
-            
+
                         if ($stmtUpdateProductos->execute()) {
                             // Eliminar todos los productos de la cesta
                             $sqlVaciarCesta = "DELETE FROM productocestas WHERE idCesta IN (SELECT idCesta FROM cestas WHERE usuario=?)";
                             $stmtVaciarCesta = $conexion->prepare($sqlVaciarCesta);
                             $stmtVaciarCesta->bind_param("s", $usuario);
-            
+
                             if ($stmtVaciarCesta->execute()) {
                                 echo '<script>
                                     Swal.fire({
@@ -215,19 +217,19 @@
                         } else {
                             echo "Error al actualizar la cantidad del producto: " . $stmtUpdateProductos->error;
                         }
-            
+
                         $stmtUpdateProductos->close();
                     } else {
                         echo "Error al insertar líneas de pedido: " . $stmtInsertLineasPedido->error;
                     }
-            
+
                     $stmtInsertLineasPedido->close();
                 } else {
                     echo "Error al realizar el pedido: " . $stmtInsertPedido->error;
                 }
-            
+
                 $stmtInsertPedido->close();
-            }            
+            }
         }
     }
     ?>
@@ -409,20 +411,24 @@
         <div class="container relative">
 
             <div class="sofa-img">
-                <img src="https://support.apple.com/library/content/dam/edam/applecare/images/en_US/macbookpro/macbook-pro-14in-m3-nov-2023-silver-space-gray.png" alt="Image" class="img-fluid">
+                <!-- Puedes cambiar la URL de la imagen con el logo de TechTribe -->
+                <img src="https://support.apple.com/library/content/dam/edam/applecare/images/en_US/macbookpro/macbook-pro-14in-m3-nov-2023-silver-space-gray.png" alt="TechTribe Logo" class="img-fluid">
             </div>
 
             <div class="row">
                 <div class="col-lg-8">
                     <div class="subscription-form">
-                        <h3 class="d-flex align-items-center"><span class="me-1"><img src="../images/envelope-outline.svg" alt="Image" class="img-fluid"></span><span>Subscribe to Newsletter</span></h3>
+                        <h3 class="d-flex align-items-center">
+                            <span class="me-1"><img src="../images/envelope-outline.svg" alt="Image" class="../img-fluid"></span>
+                            <span>Suscríbete al Boletín</span>
+                        </h3>
 
                         <form action="#" class="row g-3">
                             <div class="col-auto">
-                                <input type="text" class="form-control" placeholder="Enter your name">
+                                <input type="text" class="form-control" placeholder="Ingresa tu nombre">
                             </div>
                             <div class="col-auto">
-                                <input type="email" class="form-control" placeholder="Enter your email">
+                                <input type="email" class="form-control" placeholder="Ingresa tu correo electrónico">
                             </div>
                             <div class="col-auto">
                                 <button class="btn btn-primary">
@@ -437,10 +443,11 @@
 
             <div class="row g-5 mb-5">
                 <div class="col-lg-4">
-                    <div class="mb-4 footer-logo-wrap"><a href="#" class="footer-logo">Furni<span>.</span></a></div>
-                    <p class="mb-4">Donec facilisis quam ut purus rutrum lobortis. Donec vitae odio quis nisl dapibus
-                        malesuada. Nullam ac aliquet velit. Aliquam vulputate velit imperdiet dolor tempor tristique.
-                        Pellentesque habitant</p>
+                    <div class="mb-4 footer-logo-wrap">
+                        <!-- Puedes cambiar el texto del enlace y el span con el nombre de la tienda -->
+                        <a href="#" class="footer-logo">TechTribe<span>.</span></a>
+                    </div>
+                    <p class="mb-4">Tu destino para productos electrónicos de última generación. Descubre lo último en tecnología móvil e informática.</p>
 
                     <ul class="list-unstyled custom-social">
                         <li><a href="#"><span class="fa fa-brands fa-facebook-f"></span></a></li>
@@ -452,37 +459,38 @@
 
                 <div class="col-lg-8">
                     <div class="row links-wrap">
+                        <!-- Puedes cambiar los enlaces y nombres según las secciones de tu tienda -->
                         <div class="col-6 col-sm-6 col-md-3">
                             <ul class="list-unstyled">
-                                <li><a href="#">About us</a></li>
-                                <li><a href="#">Services</a></li>
+                                <li><a href="#">Acerca de nosotros</a></li>
+                                <li><a href="#">Productos</a></li>
                                 <li><a href="#">Blog</a></li>
-                                <li><a href="#">Contact us</a></li>
+                                <li><a href="#">Contáctanos</a></li>
                             </ul>
                         </div>
 
                         <div class="col-6 col-sm-6 col-md-3">
                             <ul class="list-unstyled">
-                                <li><a href="#">Support</a></li>
-                                <li><a href="#">Knowledge base</a></li>
-                                <li><a href="#">Live chat</a></li>
+                                <li><a href="#">Soporte</a></li>
+                                <li><a href="#">Base de conocimientos</a></li>
+                                <li><a href="#">Chat en vivo</a></li>
                             </ul>
                         </div>
 
                         <div class="col-6 col-sm-6 col-md-3">
                             <ul class="list-unstyled">
-                                <li><a href="#">Jobs</a></li>
-                                <li><a href="#">Our team</a></li>
-                                <li><a href="#">Leadership</a></li>
-                                <li><a href="#">Privacy Policy</a></li>
+                                <li><a href="#">Trabajos</a></li>
+                                <li><a href="#">Nuestro equipo</a></li>
+                                <li><a href="#">Privacidad</a></li>
+                                <li><a href="#">Términos y condiciones</a></li>
                             </ul>
                         </div>
 
                         <div class="col-6 col-sm-6 col-md-3">
                             <ul class="list-unstyled">
-                                <li><a href="#">Nordic Chair</a></li>
-                                <li><a href="#">Kruzo Aero</a></li>
-                                <li><a href="#">Ergonomic Chair</a></li>
+                                <li><a href="#">Móviles</a></li>
+                                <li><a href="#">Portátiles</a></li>
+                                <li><a href="#">Accesorios</a></li>
                             </ul>
                         </div>
                     </div>
@@ -493,18 +501,16 @@
             <div class="border-top copyright">
                 <div class="row pt-4">
                     <div class="col-lg-6">
-                        <p class="mb-2 text-center text-lg-start">Copyright &copy;
-                            <script>
+                        <p class="mb-2 text-center text-lg-start">©<script>
                                 document.write(new Date().getFullYear());
-                            </script>. All Rights Reserved. &mdash; Designed with love by <a href="https://untree.co">Untree.co</a> Distributed By <a hreff="https://themewagon.com">ThemeWagon</a>
-                            <!-- License information: https://untree.co/license/ -->
+                            </script> TechTribe. Todos los derechos reservados. &mdash; <!-- Información de la licencia: https://untree.co/license/ -->
                         </p>
                     </div>
 
                     <div class="col-lg-6 text-center text-lg-end">
                         <ul class="list-unstyled d-inline-flex ms-auto">
-                            <li class="me-4"><a href="#">Terms &amp; Conditions</a></li>
-                            <li><a href="#">Privacy Policy</a></li>
+                            <li class="me-4"><a href="#">Términos y condiciones</a></li>
+                            <li><a href="#">Política de privacidad</a></li>
                         </ul>
                     </div>
 

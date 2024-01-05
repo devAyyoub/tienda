@@ -939,5 +939,28 @@ textarea {
 #direccion {
   margin-bottom: 200px;
 }
+.wide-search input[type="search"] {
+  width: 100%; /* El campo de búsqueda ocupa todo el ancho disponible */
+}
+
+.filter-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filter-label {
+  font-size: 18px;
+  margin-bottom: 0;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+}
+
 
 
