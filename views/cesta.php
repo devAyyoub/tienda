@@ -55,72 +55,74 @@
 
     <!-- Start Header/Navigation -->
     <nav class="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" arial-label="Furni navigation bar">
+        <a class="navbar-brand" href="index.php" id="logo">TechTribe<span>.</span></a>
 
-        <div class="container">
-            <a class="navbar-brand" href="index.php">TechTribe<span>.</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsFurni" aria-controls="navbarsFurni" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarsFurni">
-                <ul class="custom-navbar-nav navbar-nav ms-auto mb-2 mb-md-0">
-                    <li class="nav-item">
-                        <?php
-                        if ($rol == "admin") {
-                            echo '<li class="nav-item">';
-                            echo '<a class="nav-link" href="listado_productos.php"><Productos</b></a>';
-                            echo '</li>';
-                        }
-                        ?>
-                    </li>
-                    <li class="nav-item">
-                        <?php
-                        if ($rol == "admin") {
-                            echo '<li class="nav-item">';
-                            echo '<a class="nav-link" href="productos.php"><b>Insertar producto</b></a>';
-                            echo '</li>';
-                        }
-                        ?>
-                    </li>
-                    <li>
-                        <?php
-                        if ($rol == "admin") {
-                            echo '<li class="nav-item">';
-                            echo '<a class="nav-link" href="modificarUsuarios.php"><b>Modificar usuarios</b></a>';
-                            echo '</li>';
-                        }
-                        ?>
-                    </li>
-                    <li class="nav-item">
-						<a class="nav-link" aria-current="page" href="categorias.php" aria-disabled="true">Categorías</a>
-					</li>
-                    <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true">Todos los productos</a>
-                    </li>
-                    <li class="nav-item">
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img class="img-fluid" src="../images/user.svg" alt="">
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                <?php
-                                if ($usuario != "invitado") { ?>
-                                    <li><a class="dropdown-item" href="miCuenta.php">Mi cuenta</a></li>
-                                    <li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
-                                <?php }
-                                // Enlace para cerrar sesión o iniciar sesión según la condición
-                                if ($usuario != "invitado") {
-                                ?>
-                                    <li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
-                                <?php } else { ?>
-                                    <li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
-                                <?php } ?>
-                            </ul>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+        <div class="collapse navbar-collapse" id="navbarsFurni">
+            <ul class="custom-navbar-nav navbar-nav mx-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <?php
+                    if ($rol == "admin") {
+                        echo '<li class="nav-item">';
+                        echo '<a class="nav-link" href="listado_productos.php"><Productos</b></a>';
+                        echo '</li>';
+                    }
+                    ?>
+                </li>
+                <li class="nav-item">
+                    <?php
+                    if ($rol == "admin") {
+                        echo '<li class="nav-item">';
+                        echo '<a class="nav-link" href="productos.php"><b>Insertar producto</b></a>';
+                        echo '</li>';
+                    }
+                    ?>
+                </li>
+                <li>
+                    <?php
+                    if ($rol == "admin") {
+                        echo '<li class="nav-item">';
+                        echo '<a class="nav-link" href="modificarUsuarios.php"><b>Modificar usuarios</b></a>';
+                        echo '</li>';
+                    }
+                    ?>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="categorias.php" aria-disabled="true">Categorías</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page" href="catalogo.php" aria-disabled="true">Todos los productos</a>
+                </li>
+                <li class="nav-item">
+                    <div class="dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img class="img-fluid" src="../images/user.svg" alt="">
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            <?php
+                            if ($usuario != "invitado") { ?>
+                                <li><a class="dropdown-item" href="miCuenta.php">Mi cuenta</a></li>
+                                <li><a class="dropdown-item" href="mispedidos.php">Mis pedidos</a></li>
+                            <?php }
+                            // Enlace para cerrar sesión o iniciar sesión según la condición
+                            if ($usuario != "invitado") {
+                            ?>
+                                <li><a class="dropdown-item" href="./sesiones/cerrar_sesion.php">Cerrar sesión</a></li>
+                            <?php } else { ?>
+                                <li><a class="dropdown-item" href="./sesiones/iniciar_sesion.php">Iniciar sesión</a></li>
+                            <?php } ?>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+            <form class="d-flex" role="search" method="post" id="formBuscar" action="catalogo.php">
+                <input class="form-control me-2" name="buscado" type="search" placeholder="Search" aria-label="Search">
+                <input type="hidden" name="buscar" value="true">
+                <button class="btn btn-outline-success" type="submit"><i class="fa fa-search"></i></button>
+            </form>
         </div>
     </nav>
     <!-- End Header/Navigation -->
@@ -236,29 +238,18 @@
 
     <?php
     //productoscestas
-    $sql = "SELECT * FROM productocestas where idCesta = (SELECT idCesta FROM cestas WHERE usuario='$usuario')";
+    $sql = "SELECT pc.idProducto, p.nombreProducto, p.precio, p.descripcion, pc.cantidad, p.imagen, p.categoria FROM productocestas pc JOIN productos p ON pc.idProducto = p.idProducto WHERE pc.idCesta = (SELECT idCesta FROM cestas WHERE usuario = '$usuario')";
+
     $resultado = $conexion->query($sql);
+
+
+    //productos
 
     $productoscesta = [];
 
-    while ($fila = $resultado->fetch_assoc()) {
-        $nuevo_productocesta = new Productocesta(
-            $fila["idProducto"],
-            $fila["idCesta"],
-            $fila["cantidad"],
-        );
-        array_push($productoscesta, $nuevo_productocesta);
-    }
-
-    //productos
-    $sql2 = "SELECT * FROM productos";
-    $resultado = $conexion->query($sql2);
-
-    $productos = [];
-
     // Creación de objetos Producto a partir de los resultados de la consulta
     while ($fila = $resultado->fetch_assoc()) {
-        $nuevo_producto = new Producto(
+        $nuevo_productocestacesta = new Producto(
             $fila["idProducto"],
             $fila["nombreProducto"],
             $fila["precio"],
@@ -267,21 +258,18 @@
             $fila["imagen"],
             $fila["categoria"]
         );
-        array_push($productos, $nuevo_producto);
+        array_push($productoscesta, $nuevo_productocestacesta);
     }
     ?>
 
     <!-- Start Hero Section -->
     <div class="hero">
         <div class="container">
-            <div class="row justify-content-between">
+            <div class="row justify-content-center">
                 <div class="col-lg-5">
                     <div class="intro-excerpt">
-                        <h1>Cesta</h1>
+                        <h1 class="text-center mt-5 mb-0">Cesta</h1>
                     </div>
-                </div>
-                <div class="col-lg-7">
-
                 </div>
             </div>
         </div>
@@ -309,31 +297,27 @@
                                 </thead>
                                 <tbody>
                                     <?php
-                                    foreach ($productoscesta as $productocesta) { ?>
+                                    foreach ($productoscesta as $nuevo_productocesta) { ?>
                                         <tr>
                                             <td class="product-thumbnail">
-                                                <img src="<?php echo $nuevo_producto->imagen ?>" alt="Image" class="img-fluid">
+                                                <img src="<?php echo $nuevo_productocesta->imagen ?>" alt="Image" class="img-fluid">
                                             </td>
                                             <td class="product-name">
                                                 <h2 class="h5 text-black">
                                                     <?php
-                                                    foreach ($productos as $nuevo_producto) {
-                                                        if ($productocesta->idProducto == $nuevo_producto->idProducto) {
-                                                            break;
-                                                        }
-                                                    }
-                                                    echo $nuevo_producto->nombreProducto ?>
+
+                                                    echo $nuevo_productocesta->nombreProducto ?>
                                                 </h2>
                                             </td>
                                             <td>
-                                                <?php echo $nuevo_producto->precio . ' €' ?>
+                                                <?php echo $nuevo_productocesta->precio . ' €' ?>
                                             </td>
                                             <td>
-                                                <?php echo $productocesta->cantidad ?>
+                                                <?php echo $nuevo_productocesta->cantidad ?>
                                             </td>
                                             <td>
                                                 <form action="" method="post">
-                                                    <input type="hidden" name="productocesta" value="<?php echo $productocesta->idProducto ?>">
+                                                    <input type="hidden" name="productocesta" value="<?php echo $nuevo_productocesta->idProducto ?>">
                                                     <input class="btn btn-danger" type="submit" name="delete" value="X" onclick="return confirmacion()">
                                                 </form>
                                             </td>
@@ -441,10 +425,9 @@
                 </div>
             </div>
 
-            <div class="row g-5 mb-5">
-                <div class="col-lg-4">
+            <div class="row g-3 mb-5">
+                <div class="col-lg-4 mb-3 mb-lg-0">
                     <div class="mb-4 footer-logo-wrap">
-                        <!-- Puedes cambiar el texto del enlace y el span con el nombre de la tienda -->
                         <a href="#" class="footer-logo">TechTribe<span>.</span></a>
                     </div>
                     <p class="mb-4">Tu destino para productos electrónicos de última generación. Descubre lo último en tecnología móvil e informática.</p>
@@ -459,8 +442,7 @@
 
                 <div class="col-lg-8">
                     <div class="row links-wrap">
-                        <!-- Puedes cambiar los enlaces y nombres según las secciones de tu tienda -->
-                        <div class="col-6 col-sm-6 col-md-3">
+                        <div class="col-6 col-sm-6 col-md-3 mb-3">
                             <ul class="list-unstyled">
                                 <li><a href="#">Acerca de nosotros</a></li>
                                 <li><a href="#">Productos</a></li>
@@ -469,7 +451,7 @@
                             </ul>
                         </div>
 
-                        <div class="col-6 col-sm-6 col-md-3">
+                        <div class="col-6 col-sm-6 col-md-3 mb-3">
                             <ul class="list-unstyled">
                                 <li><a href="#">Soporte</a></li>
                                 <li><a href="#">Base de conocimientos</a></li>
@@ -477,7 +459,7 @@
                             </ul>
                         </div>
 
-                        <div class="col-6 col-sm-6 col-md-3">
+                        <div class="col-6 col-sm-6 col-md-3 mb-3">
                             <ul class="list-unstyled">
                                 <li><a href="#">Trabajos</a></li>
                                 <li><a href="#">Nuestro equipo</a></li>
@@ -486,7 +468,7 @@
                             </ul>
                         </div>
 
-                        <div class="col-6 col-sm-6 col-md-3">
+                        <div class="col-6 col-sm-6 col-md-3 mb-3">
                             <ul class="list-unstyled">
                                 <li><a href="#">Móviles</a></li>
                                 <li><a href="#">Portátiles</a></li>
@@ -495,8 +477,8 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+
 
             <div class="border-top copyright">
                 <div class="row pt-4">

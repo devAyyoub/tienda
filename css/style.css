@@ -122,7 +122,6 @@ a.more {
 
 .hero {
   background: rgb(32, 32, 32);
-  padding: calc(4rem - 30px) 0 0rem 0;
 }
 @media (min-width: 768px) {
   .hero {
@@ -178,7 +177,6 @@ a.more {
   .hero .hero-img-wrap img {
     left: 0px;
     top: -80px;
-    position: absolute;
     right: -50px;
   }
 }
@@ -235,7 +233,7 @@ a.more {
 }
 .btn.btn-secondary {
   color: #2f2f2f;
-  background: #f9bf29;
+  background-color: #f8b810;
   border-color: #f9bf29;
 }
 .btn.btn-secondary:hover {
@@ -962,5 +960,153 @@ textarea {
   font-size: 16px;
 }
 
+#logo {
+  margin-left: 20px;
+}
 
+#formBuscar {
+  margin-right: 20px;
+}
 
+.navbar {
+  position: fixed;
+  width: 100%;
+  z-index: 1000;
+}
+
+.cartaCuenta{
+  margin-top: 120px;
+}
+
+.dropdown2 {
+  display: none;
+}
+.navbar {
+  background-color: rgb(32, 32, 32)  !important;
+}
+.navbar * {
+  margin-top: 0.4%;
+  margin-bottom: 0.2%;
+}
+@media (max-width: 768px) {
+  .navbar-nav {
+    display: table;  
+    float: none !important;
+    margin: auto !important;
+  }
+  .dropdown2 {
+    margin-bottom: 20px;
+  }
+
+  #formBuscar {
+    margin-top: 20px;
+    margin-left: 50px;
+  }
+
+  .navbar {
+    position: relative;
+  }
+  .dropdown2 {
+    display: block;
+    top: 10px;
+    right: 20px;
+    width: 20px;
+  }
+  .dropdown2 .btn {
+    background-color: rgb(41, 41, 41);
+  }
+  .logo {
+    margin-left: 20px !important;
+    font-size: 30px !important; 
+  }
+  .hero {
+    display: none;
+  }
+  .navbar-toggler{
+    margin-right: 20px;
+    height: 50px;
+  }
+  #formBuscar {
+    margin-bottom: 20px;
+    width: 100%;
+    margin-left: 4%;
+  }
+}
+
+#sidebar {
+  height: 100vh;
+  width: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: white;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+  color: white;
+  z-index: 2000;
+}
+
+#sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+  width: 20%;
+}
+#sidebar a:hover{
+  font-weight: bold;
+  transition: 0.3s;
+  color: #f8b810 !important;
+}
+
+#sidebar a:hover {
+  color: #f1f1f1;
+}
+
+#sidebar .close-btn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+.contenedorRespo {
+  display: flex;
+}
+
+.logo {
+  margin-left: 2%;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.nav-item {
+  margin-left: 20%;
+}
+
+.nav-item a:hover {
+  font-weight: bold;
+  transition: 0.3s;
+  color: #f8b810 !important;
+}
+
+.nav-item {
+  margin-left: 20%;
+  font-size: 18px;
+  font-weight: 500
+}
+
+.dropdown-menu li {
+  text-align: center;
+}
+
+.divFiltrar {
+  margin-top: 40px !important;
+}
+.dropdown .btn {
+  background-color: rgb(41, 41, 41);
+}

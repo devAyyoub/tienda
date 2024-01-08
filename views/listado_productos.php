@@ -156,7 +156,7 @@
 
     // Creación de objetos Producto a partir de los resultados de la consulta
     while ($fila = $resultado->fetch_assoc()) {
-        $nuevo_producto = new Producto(
+        $nuevo_productocesta = new Producto(
             $fila["idProducto"],
             $fila["nombreProducto"],
             $fila["precio"],
@@ -165,7 +165,7 @@
             $fila["imagen"],
             $fila["categoria"]
         );
-        array_push($productos, $nuevo_producto);
+        array_push($productos, $nuevo_productocesta);
     }
     ?>
 
